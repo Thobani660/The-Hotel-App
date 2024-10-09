@@ -1,3 +1,4 @@
+// src/App.js
 import Home from "./pages/homepage";
 import SignIn from "./pages/signin";
 import SignUp from "./pages/signup";
@@ -7,9 +8,9 @@ import NavBar from "./components/nav";
 import Payment from "./pages/payment";
 import History from "./pages/history";
 import Profile from "./pages/profile";
+import AdmitSignIn from "./pages/admin/signin";
+import AdmitSignUp from "./pages/admin/SignUp";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-
-
 
 function App() {
   return (
@@ -21,12 +22,13 @@ function App() {
                       <Route path="/" element={<Home />} />
                       <Route path="/signin" element={<SignIn />} />
                       <Route path="/signup" element={<SignUp />} />
+                      <Route path="/adminsignin" element={<AdmitSignIn />} /> {/* Admin SignIn */}
+                      <Route path="/adminsignup" element={<AdmitSignUp />} /> {/* Admin SignUp */}
                       <Route path="/bookings" element={<Booking />} />
                       <Route path="/payment" element={<Payment />} />
                       <Route path="/history" element={<History />} />
                       <Route path="*" element={<NoPage />} /> {/* Fallback for unmatched routes */}
                       <Route path="/profile" element={<Profile />} />
-
                   </Routes>
               </div>
           </div>
@@ -51,4 +53,4 @@ const styles = {
   },
 };
 
-export default App
+export default App;
