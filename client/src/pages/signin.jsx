@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { auth } from "../firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -10,12 +10,16 @@ function Login() {
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent default form submission
+
     try {
       await signInWithEmailAndPassword(auth, email, password);
+      alert("Login successful!"); // Alert on successful login
       navigate("/"); // Redirect to the homepage
-    } catch (err) {
-      setError(err.message);
+    } catch (error) {
+      console.error("Error logging in user: ", error);
+      alert("Error logging in: " + error.message); // Alert on error
+      setError(error.message); // Set error state for any additional UI display
     }
   };
 
@@ -81,8 +85,8 @@ function Login() {
     <div style={styles.container}>
       <form style={styles.form} onSubmit={handleLogin}>
         <h2 style={{ marginBottom: "20px", fontSize: "28px", fontWeight: "600" }}>Login</h2>
-        
-        {error && <p style={styles.error}>{error}</p>}
+
+        {error && <p style={styles.error}>{error}</p>} {/* Display error message */}
 
         <div>
           <label htmlFor="email" style={styles.label}><b>Email</b></label>
@@ -109,7 +113,7 @@ function Login() {
             onFocus={(e) => (e.target.style.borderColor = styles.inputFocus.borderColor)}
           />
         </div>
-        <h5></h5>  
+        <h5> Don't have an account? <Link to="/signup">Sign Up</Link></h5>  
         <button
           type="submit"
           style={styles.button}

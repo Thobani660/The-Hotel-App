@@ -44,11 +44,13 @@ function NavBar() {
                     <li style={liStyle}><Link to="/"><h4 style={{color:"yellow"}}>Home</h4></Link></li>
                     <li style={liStyle}><Link to="/signin"><h4 style={{color:"yellow"}}>SignIn</h4></Link></li>
                     <li style={liStyle}><Link to="/signup"><h4 style={{color:"yellow"}}>SignUp</h4></Link></li>
-                    <li style={liStyle}><Link to="/Booking"><h4 style={{color:"yellow"}}>Booking</h4></Link></li>
+                    {/* <li style={liStyle}><Link to="/SignUp"><h4 style={{color:"yellow"}}>SignUp</h4></Link></li> */}
+                    <li style={liStyle}><Link to="/bookings"><h4 style={{color:"yellow"}}>Booking</h4></Link></li>
                     <li style={liStyle}><Link to="/noPage"><h4 style={{color:"yellow"}}>NoPage</h4></Link></li>
                     <li style={liStyle}><Link to="/history"><h4 style={{color:"yellow"}}>history</h4></Link></li>
                     <li style={liStyle}><Link to="/profile"><h4 style={{color:"yellow"}}>Profile</h4></Link></li>
                     <li style={liStyle}><Link to="/payment"><h4 style={{color:"yellow"}}>Payment</h4></Link></li>
+                    <li style={liStyle}><Link to="/adminProfile"><h4 style={{color:"yellow"}}>adminProfile</h4></Link></li>
                 </ul>
             </nav>
             <footer style={footerStyle}>

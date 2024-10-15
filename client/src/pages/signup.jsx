@@ -10,15 +10,22 @@ function SignUp() {
   const [modalVisible, setModalVisible] = useState(true); // Visible by default for demo purposes
   const navigate = useNavigate();
 
-  const handleSignUp = async (e) => {
-    e.preventDefault();
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      navigate("/"); // Redirect to the homepage
-    } catch (err) {
-      setError(err.message);
-    }
-  };
+ 
+const handleSignUp = async (email, password) => {
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    navigate("/");
+    const user = userCredential.user;
+
+    // Store user data in Firestore
+    await setDoc(doc(db, "users", user.uid), {
+      email: user.email,
+      createdAt: new Date(),
+    });
+  } catch (error) {
+    console.error("Error creating user: ", error);
+  }
+};
 
   const modalStyles = {
     display: modalVisible ? "block" : "none",
