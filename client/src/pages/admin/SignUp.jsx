@@ -8,6 +8,9 @@ function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
+  const [idNumber, setIdNumber] = useState("");
+  const [cellphone, setCellphone] = useState("");
+  const [location, setLocation] = useState("");
   const [error, setError] = useState(null);
   const [modalVisible, setModalVisible] = useState(true);
   const navigate = useNavigate();
@@ -28,6 +31,9 @@ function SignUp() {
       // Store admin data in Firestore
       await setDoc(doc(db, "admins", user.uid), {
         email: user.email,
+        idNumber: idNumber,
+        cellphone: cellphone,
+        location: location,
         createdAt: new Date(),
       });
       alert("Sign up successful!"); // Alert on successful sign-up
@@ -137,6 +143,29 @@ function SignUp() {
             required
             style={inputStyles}
           />
+           <input
+          type="text"
+          placeholder="Enter ID Number"
+          value={idNumber}
+          onChange={(e) => setIdNumber(e.target.value)}
+          required
+        />
+
+        <input
+          type="tel"
+          placeholder="Enter Cellphone Number"
+          value={cellphone}
+          onChange={(e) => setCellphone(e.target.value)}
+          required
+        />
+
+        <input
+          type="text"
+          placeholder="Enter Location"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+          required
+        />
 
           <input
             type="password"
