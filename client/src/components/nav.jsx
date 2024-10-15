@@ -3,7 +3,8 @@ import React, { useState, useEffect } from "react";
 
 function NavBar() {
     const [menuOpen, setMenuOpen] = useState(false);
-    const [isMobile, setIsMobile] = useState(false);
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+    const [dropdownOpen, setDropdownOpen] = useState(false); // State for dropdown menu
 
     const navStyle = {
         width: '100%',
@@ -21,7 +22,7 @@ function NavBar() {
         margin: 0,
         padding: '0.5%',
         display: isMobile && !menuOpen ? 'none' : 'flex', // Hide on mobile if menu is not open
-        justifyContent: 'space-around',
+        justifyContent: 'space-between',
         alignItems: 'center',
         flexWrap: "wrap",
     };
@@ -63,15 +64,35 @@ function NavBar() {
         zIndex: 1001,
     };
 
+    const dropdownStyle = {
+        position: 'relative',
+        display: 'inline-block',
+    };
+
+    const dropdownMenuStyle = {
+        display: dropdownOpen ? 'block' : 'none',
+        position: 'absolute',
+        backgroundColor: 'black',
+        minWidth: '160px',
+        zIndex: 1001,
+        border: '1px solid yellow',
+        borderRadius: '5px',
+    };
+
     const handleMenuToggle = () => {
         setMenuOpen(!menuOpen);
+    };
+
+    const handleDropdownToggle = () => {
+        setDropdownOpen(!dropdownOpen);
     };
 
     // Handle window resize to toggle mobile menu visibility
     useEffect(() => {
         const handleResize = () => {
-            setIsMobile(window.innerWidth < 768); // Adjust this breakpoint as needed
-            if (window.innerWidth >= 768) {
+            const mobile = window.innerWidth < 768;
+            setIsMobile(mobile); // Set mobile state based on window width
+            if (!mobile) {
                 setMenuOpen(false); // Close menu when switching to desktop
             }
         };
@@ -89,8 +110,17 @@ function NavBar() {
             <nav style={navStyle}>
                 <ul style={ulStyle}>
                     <li style={liStyle}><Link to="/"><h4 style={{ color: "yellow" }}>Home</h4></Link></li>
-                    <li style={liStyle}><Link to="/signin"><h4 style={{ color: "yellow" }}>SignIn</h4></Link></li>
-                    <li style={liStyle}><Link to="/signup"><h4 style={{ color: "yellow" }}>SignUp</h4></Link></li>
+                    <li style={liStyle}>
+                        <div style={dropdownStyle}>
+                            <button onClick={handleDropdownToggle} style={{ background: 'none', border: 'none', color: 'yellow', cursor: 'pointer' }}>
+                                Login / Signup
+                            </button>
+                            <div style={dropdownMenuStyle}>
+                                <Link to="/signin" style={{ display: 'block', color: 'yellow', padding: '8px 16px' }}>SignIn</Link>
+                                <Link to="/signup" style={{ display: 'block', color: 'yellow', padding: '8px 16px' }}>SignUp</Link>
+                            </div>
+                        </div>
+                    </li>
                     <li style={liStyle}><Link to="/bookings"><h4 style={{ color: "yellow" }}>Booking</h4></Link></li>
                     <li style={liStyle}><Link to="/noPage"><h4 style={{ color: "yellow" }}>NoPage</h4></Link></li>
                     <li style={liStyle}><Link to="/history"><h4 style={{ color: "yellow" }}>History</h4></Link></li>
@@ -105,7 +135,7 @@ function NavBar() {
                 </div>
                 {menuOpen && isMobile && (
                     <div style={menuStyle}>
-                        {/* <ul>
+                        <ul>
                             <li style={liStyle}><Link to="/"><h4 style={{ color: "yellow" }}>Home</h4></Link></li>
                             <li style={liStyle}><Link to="/signin"><h4 style={{ color: "yellow" }}>SignIn</h4></Link></li>
                             <li style={liStyle}><Link to="/signup"><h4 style={{ color: "yellow" }}>SignUp</h4></Link></li>
@@ -115,7 +145,7 @@ function NavBar() {
                             <li style={liStyle}><Link to="/profile"><h4 style={{ color: "yellow" }}>Profile</h4></Link></li>
                             <li style={liStyle}><Link to="/payment"><h4 style={{ color: "yellow" }}>Payment</h4></Link></li>
                             <li style={liStyle}><Link to="/adminProfile"><h4 style={{ color: "yellow" }}>AdminProfile</h4></Link></li>
-                        </ul> */}
+                        </ul>
                     </div>
                 )}
             </nav>
