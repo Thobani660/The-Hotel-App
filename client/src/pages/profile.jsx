@@ -10,7 +10,6 @@ function Profile() {
 
   return (
   <>
-  user
   </>
   );
 }
