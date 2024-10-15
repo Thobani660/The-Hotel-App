@@ -9,14 +9,14 @@ import Payment from "./pages/payment";
 import History from "./pages/history";
 import Profile from "./pages/profile";
 import AdmitSignIn from "./pages/admin/signin";
-import AdmitSignUp from "./pages/admin/SignUp";
+import AdmitSignUp from "./pages/admin/signup";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 function App() {
   return (
       <Router>
           <div style={styles.appContainer}>
-              <NavBar />
+              <NavBar /> {/* Navbar at the top */}
               <div style={styles.contentContainer}>
                   <Routes>
                       <Route path="/" element={<Home />} />
@@ -27,8 +27,8 @@ function App() {
                       <Route path="/bookings" element={<Booking />} />
                       <Route path="/payment" element={<Payment />} />
                       <Route path="/history" element={<History />} />
-                      <Route path="*" element={<NoPage />} /> {/* Fallback for unmatched routes */}
                       <Route path="/profile" element={<Profile />} />
+                      <Route path="*" element={<NoPage />} /> {/* Catch-all route for unmatched paths */}
                   </Routes>
               </div>
           </div>
@@ -36,6 +36,7 @@ function App() {
   );
 }
 
+// Basic styles for layout
 const styles = {
   appContainer: {
       display: 'flex',
@@ -43,7 +44,7 @@ const styles = {
       height: '100vh',
   },
   contentContainer: {
-      marginTop: '70px', // Adjust according to your NavBar height
+      marginTop: '70px', // Adjust based on NavBar height
       flex: 1,
       display: 'flex',
       justifyContent: 'center',

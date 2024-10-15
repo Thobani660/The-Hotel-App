@@ -1,16 +1,15 @@
-// src/pages/signin.js
 import React, { useState } from "react";
 import { auth } from "../firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 
-function SignIn() {
+function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  const handleSignIn = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
@@ -20,29 +19,108 @@ function SignIn() {
     }
   };
 
+  const styles = {
+    container: {
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      height: "100vh",
+      backgroundColor: "#f9f9f9", // Light background for contrast
+    },
+    form: {
+      width: "90%",
+      maxWidth: "400px",
+      backgroundColor: "#fff",
+      padding: "30px 40px",
+      borderRadius: "8px",
+      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", // Soft shadow
+      textAlign: "center",
+    },
+    input: {
+      width: "100%",
+      padding: "12px 18px",
+      margin: "10px 0",
+      border: "1px solid #ccc",
+      borderRadius: "4px",
+      fontSize: "16px",
+      outline: "none",
+      transition: "border-color 0.3s", // Smooth focus effect
+    },
+    inputFocus: {
+      borderColor: "#04AA6D",
+    },
+    button: {
+      backgroundColor: "#04AA6D",
+      color: "white",
+      padding: "12px 18px",
+      margin: "20px 0",
+      border: "none",
+      cursor: "pointer",
+      width: "100%",
+      fontSize: "16px",
+      borderRadius: "4px",
+      transition: "background-color 0.3s", // Smooth hover effect
+    },
+    buttonHover: {
+      backgroundColor: "#03A05E",
+    },
+    error: {
+      color: "red",
+      marginBottom: "20px",
+    },
+    label: {
+      fontSize: "16px",
+      fontWeight: "500",
+      display: "block",
+      textAlign: "left",
+      marginBottom: "10px",
+    },
+  };
+
   return (
-    <div>
-      <h2>Sign In</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <form onSubmit={handleSignIn}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button type="submit">Sign In</button>
+    <div style={styles.container}>
+      <form style={styles.form} onSubmit={handleLogin}>
+        <h2 style={{ marginBottom: "20px", fontSize: "28px", fontWeight: "600" }}>Login</h2>
+        
+        {error && <p style={styles.error}>{error}</p>}
+
+        <div>
+          <label htmlFor="email" style={styles.label}><b>Email</b></label>
+          <input
+            type="email"
+            placeholder="Enter Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            style={styles.input}
+            onFocus={(e) => (e.target.style.borderColor = styles.inputFocus.borderColor)}
+          />
+        </div>
+
+        <div>
+          <label htmlFor="password" style={styles.label}><b>Password</b></label>
+          <input
+            type="password"
+            placeholder="Enter Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            style={styles.input}
+            onFocus={(e) => (e.target.style.borderColor = styles.inputFocus.borderColor)}
+          />
+        </div>
+        <h5></h5>  
+        <button
+          type="submit"
+          style={styles.button}
+          onMouseOver={(e) => (e.target.style.backgroundColor = styles.buttonHover.backgroundColor)}
+          onMouseOut={(e) => (e.target.style.backgroundColor = "#04AA6D")}
+        >
+          Login
+        </button>
       </form>
     </div>
   );
 }
 
-export default SignIn;
+export default Login;
