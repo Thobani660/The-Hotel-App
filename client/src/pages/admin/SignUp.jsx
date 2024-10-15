@@ -1,7 +1,7 @@
+// src/components/SignUp.js
 import React, { useState } from "react";
-import { auth, db } from "../../firebase"; // Import Firebase auth and Firestore
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore"; // Import Firestore methods
+import { useDispatch, useSelector } from "react-redux";
+import { registerUser } from "../../thunks/registerThunk.Js";
 import { useNavigate } from "react-router-dom";
 
 function SignUp() {
@@ -11,38 +11,24 @@ function SignUp() {
   const [idNumber, setIdNumber] = useState("");
   const [cellphone, setCellphone] = useState("");
   const [location, setLocation] = useState("");
-  const [error, setError] = useState(null);
   const [modalVisible, setModalVisible] = useState(true);
+  const dispatch = useDispatch();
+  const { loading, error } = useSelector((state) => state.register);
   const navigate = useNavigate();
 
-  const handleSignUp = async (e) => {
+  const handleSignUp = (e) => {
     e.preventDefault();
     
     if (password !== repeatPassword) {
       alert("Passwords do not match");
-      setError("Passwords do not match");
       return;
     }
 
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
+    // Dispatch the thunk to sign up the user
+    dispatch(registerUser(email, password, idNumber, cellphone, location));
 
-      // Store admin data in Firestore
-      await setDoc(doc(db, "admins", user.uid), {
-        email: user.email,
-        idNumber: idNumber,
-        cellphone: cellphone,
-        location: location,
-        createdAt: new Date(),
-      });
-      alert("Sign up successful!"); // Alert on successful sign-up
-      navigate("/");
-    } catch (error) {
-      console.error("Error creating admin: ", error);
-      alert("Error signing up: " + error.message); // Alert on error
-      setError(error.message); // Set error state for any additional UI display
-    }
+    // Navigate to home page after successful registration
+    navigate("/");
   };
 
   const modalStyles = {
@@ -143,29 +129,33 @@ function SignUp() {
             required
             style={inputStyles}
           />
-           <input
-          type="text"
-          placeholder="Enter ID Number"
-          value={idNumber}
-          onChange={(e) => setIdNumber(e.target.value)}
-          required
-        />
 
-        <input
-          type="tel"
-          placeholder="Enter Cellphone Number"
-          value={cellphone}
-          onChange={(e) => setCellphone(e.target.value)}
-          required
-        />
+          <input
+            type="text"
+            placeholder="Enter ID Number"
+            value={idNumber}
+            onChange={(e) => setIdNumber(e.target.value)}
+            required
+            style={inputStyles}
+          />
 
-        <input
-          type="text"
-          placeholder="Enter Location"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-          required
-        />
+          <input
+            type="tel"
+            placeholder="Enter Cellphone Number"
+            value={cellphone}
+            onChange={(e) => setCellphone(e.target.value)}
+            required
+            style={inputStyles}
+          />
+
+          <input
+            type="text"
+            placeholder="Enter Location"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            required
+            style={inputStyles}
+          />
 
           <input
             type="password"
@@ -209,8 +199,9 @@ function SignUp() {
             <button
               type="submit"
               style={buttonStyles}
+              disabled={loading}
             >
-              Sign Up
+              {loading ? "Signing Up..." : "Sign Up"}
             </button>
           </div>
 

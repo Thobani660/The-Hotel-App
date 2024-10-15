@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { auth } from "../firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+// import { auth } from "../firebase";
+// import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 
 function SignUp() {
@@ -13,9 +13,9 @@ function SignUp() {
  
 const handleSignUp = async (email, password) => {
   try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    // const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     navigate("/");
-    const user = userCredential.user;
+    // const user = userCredential.user;
 
     // Store user data in Firestore
     await setDoc(doc(db, "users", user.uid), {
