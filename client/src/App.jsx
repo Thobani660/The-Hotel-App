@@ -10,7 +10,7 @@ import History from "./pages/history";
 import Profile from "./pages/profile";
 import AdmitSignIn from "./pages/admin/signin";
 import AdmitSignUp from "./pages/admin/signup";
-import AdminProfile from "./pages/admin/adminProfile";
+import AdminProfile from "./pages/admin/side"
 // import Profile from "./pages/profile";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
