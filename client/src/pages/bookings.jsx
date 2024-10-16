@@ -50,7 +50,7 @@
       };
     
       return (
-        <Card sx={{ maxWidth: 305 ,marginTop:"-70PX" }}>
+        <Card sx={{ maxWidth: 289 ,marginTop:"-70PX",borderRadius:"20px" }}>
           <CardHeader
             avatar={
               <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
@@ -67,7 +67,7 @@
           />
           <div
         style={{
-          height: '144px',
+          height: '134px',
           backgroundImage: `url(${require("../res/H1.jpg")})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
@@ -76,7 +76,7 @@
 
 
 
-          <CardContent sx={{height:"80px"}}>
+          <CardContent sx={{height:"70px",marginBottom:"10px"}}>
             <Typography variant="body2" sx={{ color: 'text.secondary',textAlign:"wrap"}}>
             Welcome to Philasandes Hotel, where luxury meets comfort in the heart of PMB. Come and discover the ultimate in hospitality with us.
             </Typography>

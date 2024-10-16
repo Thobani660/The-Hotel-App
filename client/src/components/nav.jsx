@@ -16,19 +16,19 @@ function NavBar() {
         left: 0,
         zIndex: 1000,  // Ensures it stays on top
     };
-    
+
     const ulStyle = {
         listStyleType: 'none',
         margin: 0,
-        padding: '0.5%',
+        padding: '0.5% 0',
         display: isMobile && !menuOpen ? 'none' : 'flex', // Hide on mobile if menu is not open
-        justifyContent: 'space-between',
+        justifyContent: 'flex-end', // Align to the left
         alignItems: 'center',
         flexWrap: "wrap",
     };
 
     const liStyle = {
-        margin: '0 15px',
+        margin: '0 5px', // Reduce the space between items
         flexBasis: 'auto',
     };
 
@@ -43,7 +43,7 @@ function NavBar() {
         width: '100%',
         borderTop: '1px solid yellow',
     };
-    
+
     const hamburgerStyle = {
         display: isMobile ? "block" : "none", // Show hamburger icon only on mobile
         cursor: "pointer",
@@ -111,21 +111,13 @@ function NavBar() {
                 <ul style={ulStyle}>
                     <li style={liStyle}><Link to="/"><h4 style={{ color: "yellow" }}>Home</h4></Link></li>
                     <li style={liStyle}>
-                        <div style={dropdownStyle}>
-                            <button onClick={handleDropdownToggle} style={{ background: 'none', border: 'none', color: 'yellow', cursor: 'pointer' }}>
-                                Login / Signup
-                            </button>
-                            <div style={dropdownMenuStyle}>
-                                <Link to="/signin" style={{ display: 'block', color: 'yellow', padding: '8px 16px' }}>SignIn</Link>
-                                <Link to="/signup" style={{ display: 'block', color: 'yellow', padding: '8px 16px' }}>SignUp</Link>
-                            </div>
-                        </div>
+                        
                     </li>
                     <li style={liStyle}><Link to="/bookings"><h4 style={{ color: "yellow" }}>Booking</h4></Link></li>
-                    <li style={liStyle}><Link to="/noPage"><h4 style={{ color: "yellow" }}>NoPage</h4></Link></li>
-                    <li style={liStyle}><Link to="/history"><h4 style={{ color: "yellow" }}>History</h4></Link></li>
+                    {/* <li style={liStyle}><Link to="/noPage"><h4 style={{ color: "yellow" }}>NoPage</h4></Link></li> */}
+                    {/* <li style={liStyle}><Link to="/history"><h4 style={{ color: "yellow" }}>History</h4></Link></li> */}
                     <li style={liStyle}><Link to="/profile"><h4 style={{ color: "yellow" }}>Profile</h4></Link></li>
-                    <li style={liStyle}><Link to="/payment"><h4 style={{ color: "yellow" }}>Payment</h4></Link></li>
+                    {/* <li style={liStyle}><Link to="/payment"><h4 style={{ color: "yellow" }}>Payment</h4></Link></li> */}
                     <li style={liStyle}><Link to="/adminProfile"><h4 style={{ color: "yellow" }}>AdminProfile</h4></Link></li>
                 </ul>
                 <div style={hamburgerStyle} onClick={handleMenuToggle}>
@@ -140,9 +132,9 @@ function NavBar() {
                             <li style={liStyle}><Link to="/signin"><h4 style={{ color: "yellow" }}>SignIn</h4></Link></li>
                             <li style={liStyle}><Link to="/signup"><h4 style={{ color: "yellow" }}>SignUp</h4></Link></li>
                             <li style={liStyle}><Link to="/bookings"><h4 style={{ color: "yellow" }}>Booking</h4></Link></li>
-                            <li style={liStyle}><Link to="/noPage"><h4 style={{ color: "yellow" }}>NoPage</h4></Link></li>
-                            <li style={liStyle}><Link to="/history"><h4 style={{ color: "yellow" }}>History</h4></Link></li>
-                            <li style={liStyle}><Link to="/profile"><h4 style={{ color: "yellow" }}>Profile</h4></Link></li>
+                            {/* <li style={liStyle}><Link to="/noPage"><h4 style={{ color: "yellow" }}>NoPage</h4></Link></li> */}
+                            {/* <li style={liStyle}><Link to="/history"><h4 style={{ color: "yellow" }}>History</h4></Link></li> */}
+                            {/* <li style={liStyle}><Link to="/profile"><h4 style={{ color: "yellow" }}>Profile</h4></Link></li> */}
                             <li style={liStyle}><Link to="/payment"><h4 style={{ color: "yellow" }}>Payment</h4></Link></li>
                             <li style={liStyle}><Link to="/adminProfile"><h4 style={{ color: "yellow" }}>AdminProfile</h4></Link></li>
                         </ul>

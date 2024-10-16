@@ -36,8 +36,10 @@ function AdminProfile() {
   }
 
   return (
-    <div>
-      <h1>Admin Profile</h1>
+    <div style={{display:"flex",backgroundColor:"yellow",width:"1400px",height:"450px",padding:"20px",marginTop:"-55px",borderRadius:"20px",border:"2px solid white"}}>
+        <div style={{width:"400px",height:"440px",backgroundColor:"black",color:"white",padding:"10px",alignItems:"center",textAlign:"center",borderRadius:"20px",marginTop:"-15px",marginLeft:"-15px",border:"2px solid gold"}}>
+            <div>
+            <h1>Admin Profile</h1>
       {admin ? (
         <div>
           <p><strong>Admin UID:</strong> {admin.uid}</p>
@@ -47,6 +49,15 @@ function AdminProfile() {
       ) : (
         <p>No admin data available.</p>
       )}
+            </div>
+      <div style={{justifyContent:"space-between",marginTop:"190px",width:"400px"}}>
+      <button style={{width:"90px",backgroundColor:"lightgreen",borderRadius:"10px",border:"none",marginLeft:"-20px"}}>edit</button>
+      <button style={{width:"90px",backgroundColor:"red",borderRadius:"10px",border:"none",marginLeft:"150px"}}>LogOff</button>
+      </div>
+    </div>
+    <div style={{marginLeft:"300px"}}>
+        <h1> displaying here </h1>
+    </div>
     </div>
   );
 }

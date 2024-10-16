@@ -16,7 +16,7 @@ function Home() {
   const handleAdminLogin = () => {
     navigate("/adminsignin"); // Redirect to admin login page
   };
-  
+
   const buttonStyle = {
     backgroundColor: "#4CAF50",
     color: "white",
@@ -28,8 +28,8 @@ function Home() {
     fontWeight: "bold",
     margin: "10px",
     ":hover": {
-    backgroundColor: "#3e8e41"
-  }
+      backgroundColor: "#3e8e41",
+    },
   };
 
   const buttonHoverStyle = {
@@ -37,22 +37,46 @@ function Home() {
   };
 
   return (
-    <div>
-        <div style={{width:"2300px",height:"350px",backgroundImage:`url(${require("../res/H1.jpg")})`,backgroundRepeat:"no-repeat",backgroundSize:"cover",alignItems:"center",justifyContent:"center",textAlign:"center",marginTop:"-50px"}}>
-      <h1>Home</h1>
-      {!showOptions ? (
-        <button style={buttonStyle} onClick={handleGetStarted}>Get Started</button>
-      ) : (
-        <>
-          <button style={buttonStyle} onClick={handleUserLogin}>Login as User</button>
-          <button style={buttonStyle} onClick={handleAdminLogin}>Login as Admin</button>
-        </>
-      )}
-    </div>
+    <div style={{display:"flex",backgroundColor:"yellow"}}>
+      <div >
+        <div
+          style={{
+            width: "2300px",
+            height: "350px",
+            backgroundImage: `url(${require("../res/H1.jpg")})`,
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "cover",
+            alignItems: "center",
+            justifyContent: "center",
+            textAlign: "center",
+            marginTop: "-20px",
+          }}
+        >
+          {!showOptions ? (
+            <button style={buttonStyle} onClick={handleGetStarted}>
+              Get Started
+            </button>
+          ) : (
+            <>
+              <button style={buttonStyle} onClick={handleUserLogin}>
+                Login as User
+              </button>
+              <button style={buttonStyle} onClick={handleAdminLogin}>
+                Login as Admin
+              </button>
+            </>
+          )}
+        </div>
+        <div>
+          <h1>displaying here</h1>
+        </div>
+      </div>
 
-    {/* <div> */}
-        <div style={{width:"300px",height:"300px",backgroundColor:"blue"}}>Map</div>
-    {/* </div> */}
+      {/* <div> */}
+      <div style={{ width: "300px", height: "300px", backgroundColor: "blue" }}>
+        Map
+      </div>
+      {/* </div> */}
     </div>
   );
 }
