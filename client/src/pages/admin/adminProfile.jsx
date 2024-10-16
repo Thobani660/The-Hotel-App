@@ -1,47 +1,52 @@
-import React, { useState, useEffect } from "react";
-// import { auth, db } from "../../firebase";
-import { useNavigate } from "react-router-dom";
+// AdminProfile.jsx
+import React, { useEffect, useState } from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../../firebase"; // Adjust the path as necessary
 
 function AdminProfile() {
-  const [adminData, setAdminData] = useState({});
-  const navigate = useNavigate();
+  const [admin, setAdmin] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchAdminData = async () => {
-    //   const user = auth.currentUser;
-      if (!user) {
-        navigate("/signin");
-        return;
-      }
-
-      const adminRef = doc(db, "admins", user.uid);
-      const adminDoc = await getDoc(adminRef);
-      if (adminDoc.exists()) {
-        setAdminData(adminDoc.data());
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in
+        setAdmin({
+          uid: user.uid,
+          email: user.email,
+          displayName: user.displayName,
+        });
       } else {
-        console.error("Admin data not found");
+        // No user is signed in
+        setError("No admin is logged in");
       }
-    };
+      setLoading(false);
+    });
 
-    fetchAdminData();
-  }, [auth, db, navigate]);
+    return () => unsubscribe();
+  }, []);
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p>{error}</p>;
+  }
 
   return (
     <div>
       <h1>Admin Profile</h1>
-      <p>Welcome, {adminData.email}!</p>
-
-      <ul>
-        <li>
-          <strong>ID Number:</strong> {adminData.idNumber}
-        </li>
-        <li>
-          <strong>Cellphone Number:</strong> {adminData.cellphone}
-        </li>
-        <li>
-          <strong>Location:</strong> {adminData.location}
-        </li>
-      </ul>
+      {admin ? (
+        <div>
+          <p><strong>Admin UID:</strong> {admin.uid}</p>
+          <p><strong>Email:</strong> {admin.email}</p>
+          <p><strong>Name:</strong> {admin.displayName || "No display name available"}</p>
+        </div>
+      ) : (
+        <p>No admin data available.</p>
+      )}
     </div>
   );
 }

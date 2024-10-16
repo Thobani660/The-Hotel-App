@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-// import { auth } from "../../firebase"; // Import Firebase auth
-// import { signInWithEmailAndPassword } from "firebase/auth";
-// import { useNavigate } from "react-router-dom";
+import { auth } from "../../firebase"; // Import Firebase auth
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -11,18 +11,18 @@ function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
+  
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      alert("Login successful!"); // Alert on successful login
-      navigate("/"); 
-      // Redirect to admin dashboard or homepage
+      alert("Login successful!");
+      navigate("/");  // Redirect after successful login
     } catch (error) {
       console.error("Error logging in admin: ", error);
-      alert("Error logging in: " + error.message); // Alert on error
-      setError(error.message); // Set error state for any additional UI display
+      alert("Error logging in: " + error.message);
+      setError(error.message);  // Show error to the user
     }
   };
+  
 
   return (
     <div>
