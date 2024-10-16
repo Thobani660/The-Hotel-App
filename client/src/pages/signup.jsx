@@ -1,32 +1,35 @@
 import React, { useState } from "react";
-// import { auth } from "../firebase";
-// import { createUserWithEmailAndPassword } from "firebase/auth";
+import { useDispatch } from "react-redux";
+import { auth } from "../firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import {
+  signupStart,
+  signupSuccess,
+  signupFailure,
+} from "../features/authSlice";
 
 function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-  const [modalVisible, setModalVisible] = useState(true); // Visible by default for demo purposes
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
- 
-const handleSignUp = async (email, password) => {
-  try {
-    // const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    navigate("/");
-    // const user = userCredential.user;
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+    dispatch(signupStart());
 
-    // Store user data in Firestore
-    await setDoc(doc(db, "users", user.uid), {
-      email: user.email,
-      createdAt: new Date(),
-    });
-  } catch (error) {
-    console.error("Error creating user: ", error);
-  }
-};
-
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      dispatch(signupSuccess(userCredential.user));
+      navigate("/");
+    } catch (error) {
+      console.error("Error creating user: ", error);
+      dispatch(signupFailure(error.message));
+      setError(error.message);
+    }
+  };
   const modalStyles = {
     display: modalVisible ? "block" : "none",
     position: "fixed",

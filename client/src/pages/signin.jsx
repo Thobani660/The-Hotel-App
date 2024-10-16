@@ -1,25 +1,34 @@
+// src/components/Login.js
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { auth } from "../firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { Link, useNavigate } from "react-router-dom";
+import {
+  loginStart,
+  loginSuccess,
+  loginFailure,
+} from "../features/authSlice";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(null);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-    e.preventDefault(); // Prevent default form submission
+    e.preventDefault();
+    dispatch(loginStart());
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      alert("Login successful!"); // Alert on successful login
-      navigate("/"); // Redirect to the homepage
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      dispatch(loginSuccess(userCredential.user));
+      alert("Login successful!");
+      navigate("/");
     } catch (error) {
       console.error("Error logging in user: ", error);
-      alert("Error logging in: " + error.message); // Alert on error
-      setError(error.message); // Set error state for any additional UI display
+      dispatch(loginFailure(error.message));
+      alert("Error logging in: " + error.message);
     }
   };
 
