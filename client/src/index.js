@@ -1,15 +1,19 @@
+const functions = require("firebase-functions");
+const admin = require("firebase-admin");
+const stripe = require("stripe")("YOUR_SECRET_KEY");
 
-import { initializeApp } from 'firebase/app'
+admin.initializeApp();
 
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-    apiKey: "AIzaSyD3iUolWD8g3aSla1UrUWLmigq1KZGNwqA",
-    authDomain: "hotelapp-1d07f.firebaseapp.com",
-    projectId: "hotelapp-1d07f",
-    storageBucket: "hotelapp-1d07f.appspot.com",
-    messagingSenderId: "893655304307",
-    appId: "1:893655304307:web:c03520de3ac301dbea8206",
-    measurementId: "G-H5KSD5LJQR"
-  };
+exports.createPaymentIntent = functions.https.onRequest(async (req, res) => {
+  const { amount } = req.body;
 
-initializeApp(firebaseConfig)
+  try {
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount,
+      currency: "usd",
+    });
+    res.send({ clientSecret: paymentIntent.client_secret });
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+});
