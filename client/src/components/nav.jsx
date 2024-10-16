@@ -150,7 +150,7 @@ function NavBar() {
                 )}
             </nav>
             <footer style={footerStyle}>
-                <p>© 2024 Shopping List App. All rights reserved.</p>
+                <p>© 2024 The Hotel App. All rights reserved.</p>
             </footer>
         </div>
     );

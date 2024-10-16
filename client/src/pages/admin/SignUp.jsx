@@ -1,34 +1,24 @@
-// src/components/SignUp.js
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { registerUser } from "../../thunk/registerThunk.Js";
+import { auth } from "../../firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 
 function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [repeatPassword, setRepeatPassword] = useState("");
-  const [idNumber, setIdNumber] = useState("");
-  const [cellphone, setCellphone] = useState("");
-  const [location, setLocation] = useState("");
-  const [modalVisible, setModalVisible] = useState(true);
-  const dispatch = useDispatch();
-  const { loading, error } = useSelector((state) => state.register);
+  const [error, setError] = useState(null);
+  const [modalVisible, setModalVisible] = useState(true); // Visible by default for demo purposes
   const navigate = useNavigate();
 
-  const handleSignUp = (e) => {
+  const handleSignUp = async (e) => {
     e.preventDefault();
-    
-    if (password !== repeatPassword) {
-      alert("Passwords do not match");
-      return;
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      alert("Welcome you have successfully Signed Up,please Sign In")
+      navigate("/adminsignin"); // Redirect to the homepage
+    } catch (err) {
+      setError(err.message);
     }
-
-    // Dispatch the thunk to sign up the user
-    dispatch(registerUser(email, password, idNumber, cellphone, location));
-
-    // Navigate to home page after successful registration
-    navigate("/");
   };
 
   const modalStyles = {
@@ -39,9 +29,9 @@ function SignUp() {
     top: 0,
     width: "100%",
     height: "100%",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // Dark transparent background
     paddingTop: "50px",
-    overflowY: "auto",
+    overflowY: "auto", // Allow scrolling
   };
 
   const modalContentStyles = {
@@ -52,8 +42,8 @@ function SignUp() {
     width: "90%",
     maxWidth: "500px",
     padding: "20px 40px",
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-    textAlign: "center",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", // Soft shadow
+    textAlign: "center", // Center text alignment for a cleaner look
   };
 
   const buttonStyles = {
@@ -65,8 +55,12 @@ function SignUp() {
     cursor: "pointer",
     width: "100%",
     fontSize: "16px",
-    borderRadius: "4px",
-    transition: "background-color 0.3s",
+    borderRadius: "4px", // Rounded button corners
+    transition: "background-color 0.3s", // Smooth transition on hover
+  };
+
+  const buttonHoverStyles = {
+    backgroundColor: "#03A05E",
   };
 
   const cancelButtonStyles = {
@@ -76,7 +70,7 @@ function SignUp() {
     fontSize: "16px",
     color: "white",
     borderRadius: "4px",
-    marginRight: "4%",
+    marginRight: "4%", // Slight spacing between cancel and submit buttons
     cursor: "pointer",
     border: "none",
     transition: "background-color 0.3s",
@@ -90,8 +84,12 @@ function SignUp() {
     borderRadius: "4px",
     fontSize: "16px",
     boxSizing: "border-box",
-    outline: "none",
-    transition: "border-color 0.3s",
+    outline: "none", // Remove the outline on focus
+    transition: "border-color 0.3s", // Smooth focus transition
+  };
+
+  const inputFocusStyles = {
+    borderColor: "#04AA6D",
   };
 
   const termsLinkStyles = {
@@ -118,7 +116,7 @@ function SignUp() {
         </span>
 
         <form style={modalContentStyles} onSubmit={handleSignUp}>
-          <h2 style={{ marginBottom: "20px", fontSize: "28px", fontWeight: "600" }}>Admin Sign Up</h2>
+          <h2 style={{ marginBottom: "20px", fontSize: "28px", fontWeight: "600" }}>Sign Up</h2>
           <p style={{ marginBottom: "30px", color: "#666" }}>Create your account</p>
 
           <input
@@ -128,33 +126,7 @@ function SignUp() {
             onChange={(e) => setEmail(e.target.value)}
             required
             style={inputStyles}
-          />
-
-          <input
-            type="text"
-            placeholder="Enter ID Number"
-            value={idNumber}
-            onChange={(e) => setIdNumber(e.target.value)}
-            required
-            style={inputStyles}
-          />
-
-          <input
-            type="tel"
-            placeholder="Enter Cellphone Number"
-            value={cellphone}
-            onChange={(e) => setCellphone(e.target.value)}
-            required
-            style={inputStyles}
-          />
-
-          <input
-            type="text"
-            placeholder="Enter Location"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-            required
-            style={inputStyles}
+            onFocus={(e) => (e.target.style.borderColor = inputFocusStyles.borderColor)}
           />
 
           <input
@@ -164,15 +136,15 @@ function SignUp() {
             onChange={(e) => setPassword(e.target.value)}
             required
             style={inputStyles}
+            onFocus={(e) => (e.target.style.borderColor = inputFocusStyles.borderColor)}
           />
 
           <input
             type="password"
             placeholder="Repeat Password"
-            value={repeatPassword}
-            onChange={(e) => setRepeatPassword(e.target.value)}
             required
             style={inputStyles}
+            onFocus={(e) => (e.target.style.borderColor = inputFocusStyles.borderColor)}
           />
 
           <label style={{ display: "block", margin: "15px 0" }}>
@@ -193,15 +165,18 @@ function SignUp() {
               type="button"
               onClick={() => setModalVisible(false)}
               style={cancelButtonStyles}
+              onMouseOver={(e) => (e.target.style.backgroundColor = "#e53935")}
+              onMouseOut={(e) => (e.target.style.backgroundColor = "#f44336")}
             >
               Cancel
             </button>
             <button
               type="submit"
               style={buttonStyles}
-              disabled={loading}
+              onMouseOver={(e) => (e.target.style.backgroundColor = buttonHoverStyles.backgroundColor)}
+              onMouseOut={(e) => (e.target.style.backgroundColor = "#04AA6D")}
             >
-              {loading ? "Signing Up..." : "Sign Up"}
+              Sign Up
             </button>
           </div>
 

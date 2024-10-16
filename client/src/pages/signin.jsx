@@ -95,7 +95,7 @@ function Login() {
       <form style={styles.form} onSubmit={handleLogin}>
         <h2 style={{ marginBottom: "20px", fontSize: "28px", fontWeight: "600" }}>Login</h2>
 
-        {error && <p style={styles.error}>{error}</p>} {/* Display error message */}
+        {/* {error && <p style={styles.error}>{error}</p>} Display error message */}
 
         <div>
           <label htmlFor="email" style={styles.label}><b>Email</b></label>

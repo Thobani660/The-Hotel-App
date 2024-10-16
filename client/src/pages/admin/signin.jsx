@@ -11,18 +11,18 @@ function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-  
+
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      alert("Login successful!");
-      navigate("/");  // Redirect after successful login
+      alert("Login successful!"); // Alert on successful login
+      navigate("/adminProfile"); 
+      // Redirect to admin dashboard or homepage
     } catch (error) {
       console.error("Error logging in admin: ", error);
-      alert("Error logging in: " + error.message);
-      setError(error.message);  // Show error to the user
+      alert("Error logging in: " + error.message); // Alert on error
+      setError(error.message); // Set error state for any additional UI display
     }
   };
-  
 
   return (
     <div>
@@ -54,7 +54,7 @@ function Login() {
         {error && <p style={{ color: "red" }}>{error}</p>} {/* Display error message */}
       </form>
       <p>
-        Don't have an account? <a href="/signup">Sign Up</a>
+        Don't have an account? <a href="/adminsignup">Sign Up</a>
       </p>
     </div>
   );

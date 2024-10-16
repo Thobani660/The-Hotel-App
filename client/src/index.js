@@ -1,6 +1,6 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
-const stripe = require("stripe")("YOUR_SECRET_KEY");
+// const stripe = require("stripe")("YOUR_SECRET_KEY");
 
 admin.initializeApp();
 

@@ -22,8 +22,8 @@ function App() {
               <div style={styles.contentContainer}>
                   <Routes>
                       <Route path="/" element={<Home />} />
-                      <Route path="/signin" element={<SignIn />} />
-                      <Route path="/signup" element={<SignUp />} />
+                      <Route path="/signin" element={<SignIn />} /> { /*user*/}
+                      <Route path="/signup" element={<SignUp />} /> { /*user*/}
                       <Route path="/adminsignin" element={<AdmitSignIn />} /> {/* Admin SignIn */}
                       <Route path="/adminsignup" element={<AdmitSignUp />} /> {/* Admin SignUp */}
                       <Route path="/bookings" element={<Booking />} />

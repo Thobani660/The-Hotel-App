@@ -13,6 +13,8 @@ function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const [modalVisible, setModalVisible] = useState(true); // Visible by default for demo purposes
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
