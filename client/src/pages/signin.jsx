@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux"; // Import useDispatch
 import { loginSuccess, loginFailure } from "../features/authSlice"; // Import actions from the auth slice
 
-function Login() {
+function UserLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
@@ -20,9 +20,9 @@ function Login() {
       const user = userCredential.user; // Get user data from Firebase
       dispatch(loginSuccess(user)); // Dispatch loginSuccess with user data
       alert("Login successful!"); // Alert on successful login
-      navigate("/profile"); // Redirect to admin dashboard or homepage
+      navigate("/user-dashboard"); // Redirect to user dashboard or homepage
     } catch (error) {
-      console.error("Error logging in admin: ", error);
+      console.error("Error logging in user: ", error);
       alert("Error logging in: " + error.message); // Alert on error
       dispatch(loginFailure(error.message)); // Dispatch loginFailure with error message
       setError(error.message); // Set error state for any additional UI display
@@ -59,7 +59,7 @@ function Login() {
         {error && <p style={{ color: "red" }}>{error}</p>} {/* Display error message */}
       </form>
       <p>
-        Don't have an account? <a href="/adminsignup">Sign Up</a>
+        Don't have an account? <a href="/signup">Sign Up</a> {/* Updated link for user sign-up */}
       </p>
     </div>
   );
@@ -90,4 +90,4 @@ const styles = {
   },
 };
 
-export default Login;
+export default UserLogin;
