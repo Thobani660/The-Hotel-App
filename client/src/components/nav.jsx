@@ -31,6 +31,45 @@ function NavBar() {
         margin: '0 5px', // Reduce the space between items
         flexBasis: 'auto',
     };
+    // const footerStyle = {
+    //     backgroundColor: "#333", // Dark background for contrast
+    //     color: "#fff", // White text for readability
+    //     padding: "20px 0", // Add vertical padding
+    //     textAlign: "center", // Center the text
+    //     position: "relative", // Adjust position if needed
+    //     bottom: 0, // Stick to the bottom of the page
+    //     width: "100%", // Full width
+    //   };
+      
+      const footerContentStyle = {
+        maxWidth: "1200px", // Max width for content alignment
+        margin: "0 auto", // Center align
+        padding: "0 20px", // Side padding
+      };
+      
+      const footerTextStyle = {
+        margin: "0", // Remove default margin
+        fontSize: "14px", // Smaller font size
+      };
+      
+      const footerLinksStyle = {
+        marginTop: "10px", // Space above links
+        display: "flex", // Flexbox for horizontal alignment
+        justifyContent: "center", // Center links
+        gap: "15px", // Space between links
+      };
+      
+      const footerLinkStyle = {
+        color: "#fff", // Link color
+        textDecoration: "none", // No underline
+        fontSize: "14px", // Consistent font size
+        transition: "color 0.3s", // Smooth color transition on hover
+      };
+      
+      footerLinkStyle[':hover'] = {
+        color: "#007BFF", // Change color on hover
+      };
+      
 
     const footerStyle = {
         backgroundColor: 'black',
@@ -142,8 +181,16 @@ function NavBar() {
                 )}
             </nav>
             <footer style={footerStyle}>
-                <p>© 2024 The Hotel App. All rights reserved.</p>
-            </footer>
+  <div style={footerContentStyle}>
+    <p style={footerTextStyle}>© 2024 The Hotel App. All rights reserved.</p>
+    <div style={footerLinksStyle}>
+      <a href="/privacy" style={footerLinkStyle}>Privacy Policy</a>
+      <a href="/terms" style={footerLinkStyle}>Terms of Service</a>
+      <a href="/contact" style={footerLinkStyle}>Contact Us</a>
+    </div>
+  </div>
+</footer>
+
         </div>
     );
 }
