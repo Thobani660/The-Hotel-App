@@ -1,65 +1,229 @@
-// // AdminProfile.jsx
-// import React, { useEffect, useState } from "react";
-// import { onAuthStateChanged } from "firebase/auth";
-// import { auth } from "../../firebase"; // Adjust the path as necessary
+import React, { useEffect, useState } from "react";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { auth } from "../../firebase"; // Adjust the path as necessary
+import { useDispatch } from "react-redux"; // To dispatch Redux actions
+import { logout } from "../../features/authSlice"; // Adjust path as necessary
+import BookingForm from "./bookingForm"; // Ensure correct import
+import Accommodation from "../accomodation"; // Import the Accommodation component
 
-// function AdminProfile() {
-//   const [admin, setAdmin] = useState(null);
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState(null);
+function AdminProfile() {
+  const [admin, setAdmin] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [bookings, setBookings] = useState([]);
+  const [isFormVisible, setIsFormVisible] = useState(false); // State to manage form visibility
 
-//   useEffect(() => {
-//     const unsubscribe = onAuthStateChanged(auth, (user) => {
-//       if (user) {
-//         // User is signed in
-//         setAdmin({
-//           uid: user.uid,
-//           email: user.email,
-//           displayName: user.displayName,
-//         });
-//       } else {
-//         // No user is signed in
-//         setError("No admin is logged in");
-//       }
-//       setLoading(false);
-//     });
+  const dispatch = useDispatch(); // Initialize dispatch
 
-//     return () => unsubscribe();
-//   }, []);
+  const [formData, setFormData] = useState({
+    title: "",
+    subheader: "",
+    description: "",
+    imageUrl: "",
+  });
 
-//   if (loading) {
-//     return <p>Loading...</p>;
-//   }
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in
+        setAdmin({
+          uid: user.uid,
+          email: user.email,
+          displayName: user.displayName,
+        });
+      } else {
+        // No user is signed in
+        setError("No admin is logged in");
+      }
+      setLoading(false);
+    });
 
-//   if (error) {
-//     return <p>{error}</p>;
-//   }
+    return () => unsubscribe();
+  }, []);
 
-//   return (
-//     <div style={{display:"flex",backgroundColor:"yellow",width:"1400px",height:"450px",padding:"20px",marginTop:"-55px",borderRadius:"20px",border:"2px solid white"}}>
-//         <div style={{width:"400px",height:"440px",backgroundColor:"black",color:"white",padding:"10px",alignItems:"center",textAlign:"center",borderRadius:"20px",marginTop:"-15px",marginLeft:"-15px",border:"2px solid gold"}}>
-//             <div>
-//             <h1>Admin Profile</h1>
-//       {admin ? (
-//         <div>
-//           <p><strong>Admin UID:</strong> {admin.uid}</p>
-//           <p><strong>Email:</strong> {admin.email}</p>
-//           <p><strong>Name:</strong> {admin.displayName || "No display name available"}</p>
-//         </div>
-//       ) : (
-//         <p>No admin data available.</p>
-//       )}
-//             </div>
-//       <div style={{justifyContent:"space-between",marginTop:"190px",width:"400px"}}>
-//       <button style={{width:"90px",backgroundColor:"lightgreen",borderRadius:"10px",border:"none",marginLeft:"-20px"}}>edit</button>
-//       <button style={{width:"90px",backgroundColor:"red",borderRadius:"10px",border:"none",marginLeft:"150px"}}>LogOff</button>
-//       </div>
-//     </div>
-//     <div style={{marginLeft:"300px"}}>
-//         <h1> displaying here </h1>
-//     </div>
-//     </div>
-//   );
-// }
+  // Handler for log off button
+  const handleLogOff = async () => {
+    try {
+      await signOut(auth); // Sign out user from Firebase
+      dispatch(logout()); // Dispatch Redux logout action
+    } catch (err) {
+      console.error("Error logging off:", err);
+    }
+  };
 
-// export default AdminProfile;
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p>{error}</p>;
+  }
+
+  // Handle form input change
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  // Handle form submission
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setBookings((prevBookings) => [...prevBookings, formData]); // Add new booking to bookings state
+    setFormData({ title: "", subheader: "", description: "", imageUrl: "" }); // Clear form input after submission
+    setIsFormVisible(false); // Hide form after submission
+  };
+
+  // Toggle form visibility
+  const toggleFormVisibility = () => {
+    setIsFormVisible((prev) => !prev);
+  };
+
+  return (
+    <div style={styles.container}>
+      {/* Admin Profile Section */}
+      <div style={styles.profileCard}>
+        <div style={styles.avatarContainer}>
+          <div style={styles.avatar}></div>
+        </div>
+        <h1 style={styles.heading}>Admin Profile</h1>
+        {admin ? (
+          <div style={styles.infoContainer}>
+            <div style={styles.infoItem}>
+              <strong>Admin UID:</strong> {admin.uid}
+            </div>
+            <div style={styles.infoItem}>
+              <strong>Email:</strong> {admin.email}
+            </div>
+            <div style={styles.infoItem}>
+              <strong>Name:</strong>{" "}
+              {admin.displayName || "No display name available"}
+            </div>
+          </div>
+        ) : (
+          <p>No admin data available.</p>
+        )}
+        <div style={styles.buttonContainer}>
+          <button style={styles.editButton}>Edit</button>
+          <button style={styles.logOffButton} onClick={handleLogOff}>
+            LogOff
+          </button>
+        </div>
+      </div>
+
+      {/* Booking Form Section */}
+      <div style={styles.detailsSection}>
+        <button style={styles.createButton} onClick={toggleFormVisibility}>
+          {isFormVisible ? "Hide Create Hotel Form" : "Create a Hotel"}
+        </button>
+
+        {isFormVisible && (
+          <BookingForm
+            formData={formData}
+            handleChange={handleChange}
+            handleSubmit={handleSubmit}
+          />
+        )}
+
+        {/* Render the accommodation cards */}
+        <Accommodation bookings={bookings} />
+      </div>
+    </div>
+  );
+}
+
+// Your styles remain unchanged
+const styles = {
+  container: {
+    display: "flex",
+    justifyContent: "space-between",
+    backgroundColor: "#f4f5f7",
+    padding: "10px",
+    borderRadius: "15px",
+    border: "2px solid #eaeaea",
+    width: "100%",
+    maxWidth: "1200px",
+    margin: "auto",
+    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+    marginTop: "-13px",
+    boxShadow: "0 4px 12px grey",
+  },
+  profileCard: {
+    backgroundColor: "#fff",
+    width: "40%",
+    padding: "30px",
+    borderRadius: "15px",
+    textAlign: "center",
+    boxShadow: "0 4px 12px grey",
+  },
+  avatarContainer: {
+    display: "flex",
+    justifyContent: "center",
+    marginBottom: "20px",
+  },
+  avatar: {
+    width: "120px",
+    height: "120px",
+    backgroundColor: "#3b5998",
+    borderRadius: "50%",
+  },
+  heading: {
+    fontSize: "24px",
+    color: "#333",
+    marginBottom: "20px",
+    fontWeight: "bold",
+  },
+  infoContainer: {
+    marginBottom: "30px",
+  },
+  infoItem: {
+    fontSize: "16px",
+    color: "#555",
+    marginBottom: "10px",
+  },
+  buttonContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+  },
+  editButton: {
+    backgroundColor: "#4CAF50",
+    color: "#fff",
+    border: "none",
+    borderRadius: "5px",
+    padding: "10px 20px",
+    cursor: "pointer",
+    fontSize: "16px",
+  },
+  logOffButton: {
+    backgroundColor: "#F44336",
+    color: "#fff",
+    border: "none",
+    borderRadius: "5px",
+    padding: "10px 20px",
+    cursor: "pointer",
+    fontSize: "16px",
+  },
+  createButton: {
+    backgroundColor: "#007BFF",
+    color: "#fff",
+    border: "none",
+    borderRadius: "5px",
+    padding: "10px 20px",
+    cursor: "pointer",
+    fontSize: "16px",
+    marginBottom: "20px",
+  },
+  detailsSection: {
+    width: "55%",
+    padding: "30px",
+    backgroundColor: "#fff",
+    borderRadius: "15px",
+    boxShadow: "0 4px 12px grey",
+    textAlign: "left",
+    marginLeft: "20px",
+  },
+};
+
+export default AdminProfile;

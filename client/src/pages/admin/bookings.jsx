@@ -68,7 +68,7 @@
           <div
         style={{
           height: '134px',
-          backgroundImage: `url(${require("../res/H1.jpg")})`,
+          backgroundImage: `url(${require("../../res/H2.jpg")})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}

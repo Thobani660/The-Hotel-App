@@ -37,7 +37,7 @@ function Home() {
   };
 
   return (
-    <div style={{display:"flex",backgroundColor:"yellow"}}>
+    <div style={{}}>
       <div >
         <div
           style={{
