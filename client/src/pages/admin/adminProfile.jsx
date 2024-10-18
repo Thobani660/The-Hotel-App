@@ -1,4 +1,3 @@
-// src/components/AdminProfile.jsx
 import React, { useEffect, useState } from "react";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth, db } from "../../firebase"; // Ensure correct import for Firebase
@@ -11,7 +10,7 @@ import Accommodation from "../accomodation"; // Ensure correct import
 
 function AdminProfile() {
   const [admin, setAdmin] = useState(null);
-  const [loading, setLoading] = useState(true);
+//   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [editMode, setEditMode] = useState(false); // Toggle for editing
@@ -44,7 +43,7 @@ function AdminProfile() {
       } else {
         setError("No admin is logged in");
       }
-      setLoading(false);
+    //   setLoading(false);
     });
 
     return () => unsubscribe();
@@ -63,18 +62,22 @@ function AdminProfile() {
 
   // Handler for log off button
   const handleLogOff = async () => {
+     
     try {
       await signOut(auth);
       dispatch(logout());
-      alert("Logged off successfully!"); // Alert on log off
+      alert("Logged off successfully!"); 
+      navigate("/signin"); 
+      // Alert on log off
     } catch (err) {
       console.error("Error logging off:", err);
     }
+
   };
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
+//   if (loading) {
+//     return <p>Loading...</p>;
+//   }
 
   if (error) {
     return <p>{error}</p>;
@@ -100,35 +103,30 @@ function AdminProfile() {
       reader.readAsDataURL(file);
     }
   };
-
-  // Handle form submission (Add/Edit)
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (editMode && formData.id) {
-      // Update booking
-      try {
-        await updateDoc(doc(db, "bookings", formData.id), { ...formData, imageUrl: avatarUrl });
-        dispatch(updateBooking({ id: formData.id, updatedData: { ...formData, imageUrl: avatarUrl } }));
-        alert("Booking updated successfully!"); // Alert on update
-        setEditMode(false);
-      } catch (error) {
-        console.error("Error updating booking:", error);
-      }
-    } else {
-      // Add booking
-      try {
-        const docRef = await addDoc(collection(db, "bookings"), { ...formData, imageUrl: avatarUrl });
-        const newBooking = { ...formData, id: docRef.id, imageUrl: avatarUrl };
-        dispatch(addBooking(newBooking));
-        alert("Booking added successfully!"); // Alert on add
-      } catch (error) {
-        console.error("Error adding booking:", error);
-      }
+    try {
+        if (editMode && formData.id) {
+            // Update booking
+            await updateDoc(doc(db, "bookings", formData.id), { ...formData, imageUrl: avatarUrl });
+            dispatch(updateBooking({ id: formData.id, updatedData: { ...formData, imageUrl: avatarUrl } }));
+            alert("Booking updated successfully!");
+        } else {
+            // Add booking
+            const docRef = await addDoc(collection(db, "bookings"), { ...formData, imageUrl: avatarUrl });
+            const newBooking = { ...formData, id: docRef.id, imageUrl: avatarUrl };
+            dispatch(addBooking(newBooking)); // Update Redux store with the new booking
+            alert("Booking added successfully!");
+        }
+    } catch (error) {
+        console.error("Error saving booking:", error);
+    } finally {
+        // Reset form
+        setFormData({ id: null, title: "", subheader: "", description: "", imageUrl: "" });
+        setIsFormVisible(false);
+        setShowAvatarInput(false);
     }
-    setFormData({ id: null, title: "", subheader: "", description: "", imageUrl: "" });
-    setIsFormVisible(false);
-    setShowAvatarInput(false); // Hide avatar input when form is submitted
-  };
+};
 
   // Handle editing a booking
   const handleEdit = (id) => {
@@ -214,6 +212,7 @@ function AdminProfile() {
             formData={formData}
             handleChange={handleChange}
             handleSubmit={handleSubmit}
+            style={{marginLeft:"-200px"}}
           />
         )}
 
@@ -228,7 +227,7 @@ function AdminProfile() {
   );
 }
 
-// Your styles remain unchanged
+// Your styles
 const styles = {
   container: {
     display: "flex",
@@ -237,20 +236,21 @@ const styles = {
     padding: "10px",
     borderRadius: "15px",
     border: "2px solid #eaeaea",
-    width: "100%",
-    maxWidth: "1200px",
-    margin: "auto",
-    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-    marginTop: "-13px",
+    width: "100vw",  // Make sure to take full width of the viewport
+    height: "100vh", // Make sure to take full height of the viewport
+    margin: "0",
     boxShadow: "0 4px 12px grey",
   },
   profileCard: {
     backgroundColor: "#fff",
-    width: "40%",
+    width: "30%",
+    height: "800px", // Allow it to grow as needed
     padding: "30px",
     borderRadius: "15px",
     textAlign: "center",
     boxShadow: "0 4px 12px grey",
+    overflow: "auto",
+    position:"fixed" // Handle overflow if content is large
   },
   avatarContainer: {
     display: "flex",
@@ -314,11 +314,14 @@ const styles = {
     marginBottom: "20px",
   },
   detailsSection: {
-    width: "55%",
+    width: "65%",
+    height: "auto", // Allow it to grow as needed
     backgroundColor: "#fff",
     padding: "30px",
     borderRadius: "15px",
     boxShadow: "0 4px 12px grey",
+    overflow: "auto", 
+    marginLeft:"650px"// Handle overflow if content is large
   },
 };
 

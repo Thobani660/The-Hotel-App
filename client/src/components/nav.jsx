@@ -9,73 +9,34 @@ function NavBar() {
     const navStyle = {
         width: '100%',
         backgroundColor: 'black',
-        padding: '5px',
-        borderBottom: '1px solid #ddd',
+        padding: ' 15px',
         position: 'fixed',
         top: 0,
         left: 0,
-        zIndex: 1000,  // Ensures it stays on top
+        zIndex: 1000,
+        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.3)',
     };
 
     const ulStyle = {
         listStyleType: 'none',
-        margin: 0,
-        padding: '0.5% 0',
-        display: isMobile && !menuOpen ? 'none' : 'flex', // Hide on mobile if menu is not open
-        justifyContent: 'flex-end', // Align to the left
+        marginTop: -40,
+        padding: 0,
+        display: isMobile && !menuOpen ? 'none' : 'flex',
+        justifyContent: 'flex-end',
         alignItems: 'center',
         flexWrap: "wrap",
     };
 
     const liStyle = {
-        margin: '0 5px', // Reduce the space between items
-        flexBasis: 'auto',
+        margin: '0 15px',
+        position: 'relative', // To position dropdowns
     };
-    // const footerStyle = {
-    //     backgroundColor: "#333", // Dark background for contrast
-    //     color: "#fff", // White text for readability
-    //     padding: "20px 0", // Add vertical padding
-    //     textAlign: "center", // Center the text
-    //     position: "relative", // Adjust position if needed
-    //     bottom: 0, // Stick to the bottom of the page
-    //     width: "100%", // Full width
-    //   };
-      
-      const footerContentStyle = {
-        maxWidth: "1200px", // Max width for content alignment
-        margin: "0 auto", // Center align
-        padding: "0 20px", // Side padding
-      };
-      
-      const footerTextStyle = {
-        margin: "0", // Remove default margin
-        fontSize: "14px", // Smaller font size
-      };
-      
-      const footerLinksStyle = {
-        marginTop: "10px", // Space above links
-        display: "flex", // Flexbox for horizontal alignment
-        justifyContent: "center", // Center links
-        gap: "15px", // Space between links
-      };
-      
-      const footerLinkStyle = {
-        color: "#fff", // Link color
-        textDecoration: "none", // No underline
-        fontSize: "14px", // Consistent font size
-        transition: "color 0.3s", // Smooth color transition on hover
-      };
-      
-      footerLinkStyle[':hover'] = {
-        color: "#007BFF", // Change color on hover
-      };
-      
 
     const footerStyle = {
         backgroundColor: 'black',
         color: 'yellow',
         textAlign: 'center',
-        padding: '5px 0',
+        padding: '10px 0',
         position: 'fixed',
         bottom: 0,
         left: 0,
@@ -84,9 +45,9 @@ function NavBar() {
     };
 
     const hamburgerStyle = {
-        display: isMobile ? "block" : "none", // Show hamburger icon only on mobile
+        display: isMobile ? "block" : "none",
         cursor: "pointer",
-        marginLeft: 'auto', // Align to the right
+        marginLeft: 'auto',
     };
 
     const menuStyle = {
@@ -103,41 +64,22 @@ function NavBar() {
         zIndex: 1001,
     };
 
-    const dropdownStyle = {
-        position: 'relative',
-        display: 'inline-block',
-    };
-
-    const dropdownMenuStyle = {
-        display: dropdownOpen ? 'block' : 'none',
-        position: 'absolute',
-        backgroundColor: 'black',
-        minWidth: '160px',
-        zIndex: 1001,
-        border: '1px solid yellow',
-        borderRadius: '5px',
-    };
-
     const handleMenuToggle = () => {
         setMenuOpen(!menuOpen);
-    };
-
-    const handleDropdownToggle = () => {
-        setDropdownOpen(!dropdownOpen);
     };
 
     // Handle window resize to toggle mobile menu visibility
     useEffect(() => {
         const handleResize = () => {
             const mobile = window.innerWidth < 768;
-            setIsMobile(mobile); // Set mobile state based on window width
+            setIsMobile(mobile);
             if (!mobile) {
-                setMenuOpen(false); // Close menu when switching to desktop
+                setMenuOpen(false);
             }
         };
 
         window.addEventListener("resize", handleResize);
-        handleResize(); // Initial check
+        handleResize();
 
         return () => {
             window.removeEventListener("resize", handleResize);
@@ -147,52 +89,70 @@ function NavBar() {
     return (
         <div>
             <nav style={navStyle}>
+                <div style={{ backgroundImage: `url(${require("../res/Preview2.png")})`,width:"50px",height:"50px",borderRadius:"100%",marginTop:"0px",marginLeft:"50px"}}></div>
                 <ul style={ulStyle}>
-                    <li style={liStyle}><Link to="/"><h4 style={{ color: "yellow" }}>Home</h4></Link></li>
+
                     <li style={liStyle}>
-                        
+                        <Link to="/" style={linkStyle}>Home</Link>
                     </li>
-                    <li style={liStyle}><Link to="/accomodation"><h4 style={{ color: "yellow" }}>Accommodation</h4></Link></li>
-                    {/* <li style={liStyle}><Link to="/noPage"><h4 style={{ color: "yellow" }}>NoPage</h4></Link></li> */}
-                    {/* <li style={liStyle}><Link to="/history"><h4 style={{ color: "yellow" }}>History</h4></Link></li> */}
-                    <li style={liStyle}><Link to="/profile"><h4 style={{ color: "yellow" }}>Profile</h4></Link></li>
-                    {/* <li style={liStyle}><Link to="/payment"><h4 style={{ color: "yellow" }}>Payment</h4></Link></li> */}
-                    <li style={liStyle}><Link to="/adminProfile"><h4 style={{ color: "yellow" }}>AdminProfile</h4></Link></li>
+                    <li style={liStyle}>
+                        <Link to="/accomodation" style={linkStyle}>Accommodation</Link>
+                    </li>
+                    <li style={liStyle}>
+                        <Link to="/profile" style={linkStyle}>Profile</Link>
+                    </li>
+                    <li style={liStyle}>
+                        <Link to="/adminProfile" style={linkStyle}>AdminProfile</Link>
+                    </li>
                 </ul>
                 <div style={hamburgerStyle} onClick={handleMenuToggle}>
-                    <span style={{ display: "block", width: "25px", height: "3px", background: "yellow", margin: "4px" }}></span>
-                    <span style={{ display: "block", width: "25px", height: "3px", background: "yellow", margin: "4px" }}></span>
-                    <span style={{ display: "block", width: "25px", height: "3px", background: "yellow", margin: "4px" }}></span>
+                    <span style={hamburgerSpanStyle}></span>
+                    <span style={hamburgerSpanStyle}></span>
+                    <span style={hamburgerSpanStyle}></span>
                 </div>
                 {menuOpen && isMobile && (
                     <div style={menuStyle}>
-                        <ul>
-                            <li style={liStyle}><Link to="/"><h4 style={{ color: "yellow" }}>Home</h4></Link></li>
-                            <li style={liStyle}><Link to="/signin"><h4 style={{ color: "yellow" }}>SignIn</h4></Link></li>
-                            <li style={liStyle}><Link to="/signup"><h4 style={{ color: "yellow" }}>SignUp</h4></Link></li>
-                            <li style={liStyle}><Link to="/accomodations"><h4 style={{ color: "yellow" }}>Accommodation</h4></Link></li>
-                            {/* <li style={liStyle}><Link to="/noPage"><h4 style={{ color: "yellow" }}>NoPage</h4></Link></li> */}
-                            {/* <li style={liStyle}><Link to="/history"><h4 style={{ color: "yellow" }}>History</h4></Link></li> */}
-                            {/* <li style={liStyle}><Link to="/profile"><h4 style={{ color: "yellow" }}>Profile</h4></Link></li> */}
-                            <li style={liStyle}><Link to="/payment"><h4 style={{ color: "yellow" }}>Payment</h4></Link></li>
-                            <li style={liStyle}><Link to="/adminProfile"><h4 style={{ color: "yellow" }}>AdminProfile</h4></Link></li>
+                        <ul style={{ listStyleType: 'none', padding: 0 }}>
+                            <li style={liStyle}><Link to="/" style={linkStyle}>Home</Link></li>
+                            <li style={liStyle}><Link to="/signin" style={linkStyle}>SignIn</Link></li>
+                            <li style={liStyle}><Link to="/signup" style={linkStyle}>SignUp</Link></li>
+                            <li style={liStyle}><Link to="/payment" style={linkStyle}>Payment</Link></li>
                         </ul>
                     </div>
                 )}
             </nav>
             <footer style={footerStyle}>
-  <div style={footerContentStyle}>
-    <p style={footerTextStyle}>© 2024 The Hotel App. All rights reserved.</p>
-    <div style={footerLinksStyle}>
-      <a href="/privacy" style={footerLinkStyle}>Privacy Policy</a>
-      <a href="/terms" style={footerLinkStyle}>Terms of Service</a>
-      <a href="/contact" style={footerLinkStyle}>Contact Us</a>
-    </div>
-  </div>
-</footer>
-
+                <p>© 2024 The Hotel App. All rights reserved.</p>
+                <div style={{ marginTop: "10px", display: "flex", justifyContent: "center", gap: "15px" }}>
+                    <a href="/privacy" style={footerLinkStyle}>Privacy Policy</a>
+                    <a href="/terms" style={footerLinkStyle}>Terms of Service</a>
+                    <a href="/contact" style={footerLinkStyle}>Contact Us</a>
+                </div>
+            </footer>
         </div>
     );
 }
+
+const linkStyle = {
+    color: "yellow",
+    textDecoration: "none",
+    fontSize: "18px",
+    transition: "color 0.3s",
+};
+
+const footerLinkStyle = {
+    color: "yellow",
+    textDecoration: "none",
+    fontSize: "14px",
+    transition: "color 0.3s",
+};
+
+const hamburgerSpanStyle = {
+    display: "block",
+    width: "25px",
+    height: "3px",
+    background: "yellow",
+    margin: "4px",
+};
 
 export default NavBar;
