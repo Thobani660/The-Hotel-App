@@ -1,8 +1,43 @@
-import React from "react";
+import React, { useState } from "react";
 
 function BookingForm({ formData, handleChange, handleSubmit }) {
+  const [imageFile, setImageFile] = useState(null); // State to hold the uploaded image file
+  const [imagePreview, setImagePreview] = useState(""); // State to hold the image preview URL
+
+  // Handle image file change
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file); // Store the file in state
+
+      // Create a preview URL for the uploaded image
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result); // Set the preview URL
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Handle form submission
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    if (imageFile) {
+      const formDataWithImage = new FormData();
+      formDataWithImage.append("title", formData.title);
+      formDataWithImage.append("subheader", formData.subheader);
+      formDataWithImage.append("description", formData.description);
+      formDataWithImage.append("image", imageFile); // Append the image file to the FormData
+
+      // Call the provided handleSubmit function with the new form data
+      await handleSubmit(formDataWithImage);
+    } else {
+      alert("Please upload an image.");
+    }
+  };
+
   return (
-    <form onSubmit={handleSubmit} style={styles.form}>
+    <form onSubmit={onSubmit} style={styles.form}>
       <h2 style={styles.formTitle}>Add a New Booking</h2>
       <div style={styles.formGroup}>
         <label style={styles.label}>Title:</label>
@@ -37,17 +72,21 @@ function BookingForm({ formData, handleChange, handleSubmit }) {
         />
       </div>
       <div style={styles.formGroup}>
-        <label style={styles.label}>Image URL:</label>
+        <label style={styles.label}>Upload Image:</label>
         <input
-          type="text"
-          name="imageUrl"
-          value={formData.imageUrl}
-          onChange={handleChange}
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange}
           required
           style={styles.input}
         />
       </div>
-      <button type="submit" style={styles.submitButton}>Add Booking</button>
+      {imagePreview && (
+        <div style={styles.imagePreview}>
+          <img src={imagePreview} alt="Preview" style={styles.previewImage} />
+        </div>
+      )}
+      <button type="submit" style={styles.submitButton}>Add Accommodation</button>
     </form>
   );
 }
@@ -60,7 +99,7 @@ const styles = {
     boxShadow: "0 4px 12px grey",
     maxWidth: "400px",
     margin: "auto",
-    height:"550px"
+    height: "auto",
   },
   formTitle: {
     marginBottom: "20px",
@@ -95,6 +134,15 @@ const styles = {
     fontSize: "14px",
     height: "100px",
     transition: "border-color 0.2s",
+  },
+  imagePreview: {
+    marginTop: "10px",
+    textAlign: "center",
+  },
+  previewImage: {
+    maxWidth: "100%",
+    maxHeight: "200px",
+    borderRadius: "5px",
   },
   submitButton: {
     backgroundColor: "#4CAF50",

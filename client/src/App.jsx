@@ -11,6 +11,7 @@ import Profile from "./pages/profile";
 import AdmitSignIn from "./pages/admin/signin";
 import AdmitSignUp from "./pages/admin/signup";
 import AdminProfile from "./pages/admin/adminProfile";
+import Accommodation from "./pages/accomodation";
 // import Profile from "./pages/profile";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
@@ -28,7 +29,7 @@ function App() {
             {/* Admin SignIn */}
             <Route path="/adminsignup" element={<AdmitSignUp />} />{" "}
             {/* Admin SignUp */}
-            <Route path="/bookings" element={<Booking />} />
+            <Route path="/accomodation" element={<Accommodation />} />
             <Route path="/payment" element={<Payment />} />
             <Route path="/history" element={<History />} />
             <Route path="/profile" element={<Profile />} />

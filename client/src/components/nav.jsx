@@ -152,7 +152,7 @@ function NavBar() {
                     <li style={liStyle}>
                         
                     </li>
-                    <li style={liStyle}><Link to="/bookings"><h4 style={{ color: "yellow" }}>Booking</h4></Link></li>
+                    <li style={liStyle}><Link to="/accomodation"><h4 style={{ color: "yellow" }}>Accommodation</h4></Link></li>
                     {/* <li style={liStyle}><Link to="/noPage"><h4 style={{ color: "yellow" }}>NoPage</h4></Link></li> */}
                     {/* <li style={liStyle}><Link to="/history"><h4 style={{ color: "yellow" }}>History</h4></Link></li> */}
                     <li style={liStyle}><Link to="/profile"><h4 style={{ color: "yellow" }}>Profile</h4></Link></li>
@@ -170,7 +170,7 @@ function NavBar() {
                             <li style={liStyle}><Link to="/"><h4 style={{ color: "yellow" }}>Home</h4></Link></li>
                             <li style={liStyle}><Link to="/signin"><h4 style={{ color: "yellow" }}>SignIn</h4></Link></li>
                             <li style={liStyle}><Link to="/signup"><h4 style={{ color: "yellow" }}>SignUp</h4></Link></li>
-                            <li style={liStyle}><Link to="/bookings"><h4 style={{ color: "yellow" }}>Booking</h4></Link></li>
+                            <li style={liStyle}><Link to="/accomodations"><h4 style={{ color: "yellow" }}>Accommodation</h4></Link></li>
                             {/* <li style={liStyle}><Link to="/noPage"><h4 style={{ color: "yellow" }}>NoPage</h4></Link></li> */}
                             {/* <li style={liStyle}><Link to="/history"><h4 style={{ color: "yellow" }}>History</h4></Link></li> */}
                             {/* <li style={liStyle}><Link to="/profile"><h4 style={{ color: "yellow" }}>Profile</h4></Link></li> */}
