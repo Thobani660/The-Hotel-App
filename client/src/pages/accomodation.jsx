@@ -1,57 +1,67 @@
-// Accommodation.js
-import React from "react";
+import React, { useState, useEffect } from 'react';
+import BookingCard from './admin/bookingcard'; // Assuming you have a BookingCard component
 
-function Accommodation({ bookings }) {
-  return (
-    <div style={styles.accommodationContainer}>
-      {bookings.length === 0 ? (
-        <p>No accommodations available.</p>
-      ) : (
-        bookings.map((booking, index) => (
-          <div key={index} style={styles.bookingCard}>
-            <img src={booking.imageUrl} alt={booking.title} style={styles.image} />
-            <h2 style={styles.title}>{booking.title}</h2>
-            <h3 style={styles.subheader}>{booking.subheader}</h3>
-            <p style={styles.description}>{booking.description}</p>
-          </div>
-        ))
-      )}
-    </div>
-  );
-}
+const Accommodation = () => {
+    const [accommodations, setAccommodations] = useState([]);
+    const [loading, setLoading] = useState(true); // To manage loading state
+    const [error, setError] = useState(null); // To manage error state
 
-// Your styles for Accommodation component
-const styles = {
-  accommodationContainer: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "20px",
-    marginTop: "20px",
-  },
-  bookingCard: {
-    backgroundColor: "#fff",
-    padding: "20px",
-    borderRadius: "10px",
-    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.2)",
-    textAlign: "left",
-  },
-  image: {
-    width: "100%",
-    borderRadius: "10px",
-    marginBottom: "10px",
-  },
-  title: {
-    fontSize: "20px",
-    fontWeight: "bold",
-  },
-  subheader: {
-    fontSize: "16px",
-    color: "#666",
-  },
-  description: {
-    fontSize: "14px",
-    color: "#333",
-  },
+    // Function to fetch accommodations data
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch('/api/accommodations'); // Replace with your actual API endpoint
+                if (!response.ok) {
+                    throw new Error('Failed to fetch accommodations');
+                }
+                const data = await response.json();
+                setAccommodations(data); // Assuming data is an array of accommodations
+            } catch (err) {
+                setError(err.message); // Handle error
+            } finally {
+                setLoading(false); // Disable loading once the data is fetched
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    const handleEdit = (id) => {
+        // Handle edit logic here
+        console.log('Edit booking with id:', id);
+    };
+
+    const handleDelete = (id) => {
+        // Handle delete logic here
+        console.log('Delete booking with id:', id);
+        // Optionally remove the accommodation from the list in UI
+        setAccommodations(accommodations.filter(booking => booking.id !== id));
+    };
+
+    if (loading) {
+        return <p>Loading accommodations...</p>; // Show a loading state
+    }
+
+    if (error) {
+        return <p>Error: {error}</p>; // Show an error message
+    }
+
+    return (
+        <div>
+            {accommodations && accommodations.length > 0 ? (
+                accommodations.map((booking) => (
+                    <BookingCard
+                        key={booking.id}
+                        booking={booking}
+                        onEdit={() => handleEdit(booking.id)}
+                        onDelete={() => handleDelete(booking.id)}
+                    />
+                ))
+            ) : (
+                <p>No accommodations available.</p> // Fallback UI if no data
+            )}
+        </div>
+    );
 };
 
 export default Accommodation;
