@@ -146,7 +146,6 @@ const styles = {
     width: "100%",
     maxWidth: "1200px",
     margin: "auto",
-    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
     marginTop: "-13px",
     boxShadow: "0 4px 12px grey",
   },
