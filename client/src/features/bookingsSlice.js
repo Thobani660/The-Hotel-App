@@ -1,32 +1,31 @@
-// src/features/bookingsSlice.js
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  bookings: [], // Initialize bookings as an empty array
+  bookings: [], // Initialize as an empty array
 };
 
-const bookingSlice = createSlice({
-  name: "bookings",
+const bookingsSlice = createSlice({
+  name: 'bookings',
   initialState,
   reducers: {
     setBookings: (state, action) => {
-      state.bookings = action.payload; // Set bookings from Firestore
+      state.bookings = action.payload;
     },
     addBooking: (state, action) => {
-      state.bookings.push(action.payload); // Add a new booking
+      state.bookings.push(action.payload);
     },
     updateBooking: (state, action) => {
-      const { id, updatedData } = action.payload;
-      const bookingIndex = state.bookings.findIndex((b) => b.id === id);
-      if (bookingIndex !== -1) {
-        state.bookings[bookingIndex] = { ...state.bookings[bookingIndex], ...updatedData };
+      const index = state.bookings.findIndex((b) => b.id === action.payload.id);
+      if (index !== -1) {
+        state.bookings[index] = action.payload;
       }
     },
     deleteBooking: (state, action) => {
-      state.bookings = state.bookings.filter((b) => b.id !== action.payload); // Delete booking by id
+      state.bookings = state.bookings.filter((b) => b.id !== action.payload);
     },
   },
 });
 
-export const { setBookings, addBooking, updateBooking, deleteBooking } = bookingSlice.actions;
-export default bookingSlice.reducer;
+export const { setBookings, addBooking, updateBooking, deleteBooking } = bookingsSlice.actions;
+
+export default bookingsSlice.reducer;

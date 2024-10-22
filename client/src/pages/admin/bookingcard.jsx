@@ -1,92 +1,90 @@
-import React from 'react';
+// src/components/BookingCard.jsx
+import React from "react";
+import { useSelector } from "react-redux";
 
-function BookingCard({ booking, onEdit, onDelete }) {
-    const [accommodations, setAccommodations] = useState([]); // Initialize as an empty array
-    useEffect(() => {
-        const fetchAccommodations = async () => {
-            try {
-                const response = await fetch('/api/accommodations'); // Your API endpoint
-                const data = await response.json();
-                setAccommodations(data); // Ensure this is an array
-            } catch (error) {
-                console.error('Error fetching accommodations:', error);
-            }
-        };
-    
-        fetchAccommodations();
-    }, []);
+const BookingCard = ({ booking, onEdit, onDelete }) => {
+  const bookingData = booking || useSelector((state) => state.bookings); // Fallback if no booking is passed
 
-    return (
-        <div>
-            {accommodations && accommodations.length > 0 ? (
-                accommodations.map((booking) => (
-                    <BookingCard 
-                        key={booking.id} 
-                        booking={booking} 
-                        onEdit={() => handleEdit(booking.id)} 
-                        onDelete={() => handleDelete(booking.id)} 
-                    />
-                ))
-            ) : (
-                <p>No accommodations available.</p> // Fallback UI
-            )}
-        </div>
-    );
-}
-
-// Styles for the card
-const styles = {
-    card: {
-        background: '#f9f9f9',  // Light background for contrast
-        padding: '20px',
-        borderRadius: '10px',
-        boxShadow: '0 4px 10px rgba(0,0,0,0.15)', // Soft shadow
-        margin: '20px', // Spacing around cards
-        transition: 'transform 0.2s', // Animation on hover
-    },
-    title: {
-        fontSize: '1.5rem',
-        fontWeight: '600',
-        color: '#333',
-        marginBottom: '10px',
-    },
-    subheader: {
-        fontSize: '1.2rem',
-        fontWeight: '400',
-        color: '#555',
-        marginBottom: '10px',
-    },
-    description: {
-        fontSize: '1rem',
-        color: '#666',
-        marginBottom: '15px',
-    },
-    image: {
-        maxWidth: '100%',
-        height: 'auto',
-        borderRadius: '8px',
-        marginBottom: '15px', // Spacing below the image
-        boxShadow: '0 2px 5px rgba(0,0,0,0.1)', // Soft shadow around image
-    },
-    buttonContainer: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        marginTop: '10px',
-    },
-    button: {
-        padding: '10px 15px',
-        borderRadius: '5px',
-        border: 'none',
-        backgroundColor: '#4CAF50',
-        color: '#fff',
-        cursor: 'pointer',
-        transition: 'background-color 0.3s, transform 0.2s', // Smooth hover effect
-    },
+  return (
+    <div style={styles.card}>
+      <h2 style={styles.title}>{bookingData.title}</h2>
+      <h4 style={styles.subheader}>{bookingData.subheader}</h4>
+      <p style={styles.description}>{bookingData.description}</p>
+      {bookingData.imageUrl && (
+        <img src={bookingData.imageUrl} alt="Accommodation" style={styles.image} />
+      )}
+      {bookingData.error && <p style={styles.error}>{bookingData.error}</p>}
+      
+      {/* Edit and Delete Buttons */}
+      <div style={styles.buttonContainer}>
+        <button style={styles.editButton} onClick={onEdit}>
+          Edit
+        </button>
+        <button style={styles.deleteButton} onClick={onDelete}>
+          Delete
+        </button>
+      </div>
+    </div>
+  );
 };
 
-// Add hover effect to the card
-styles.card[':hover'] = {
-    transform: 'scale(1.05)', // Slightly enlarge on hover
+// Styles
+const styles = {
+  card: {
+    backgroundColor: "#f9f9f9",
+    padding: "20px",
+    borderRadius: "10px",
+    boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+    maxWidth: "600px",
+    margin: "20px auto",
+    textAlign: "center",
+  },
+  title: {
+    fontSize: "24px",
+    color: "#333",
+    fontWeight: "bold",
+  },
+  subheader: {
+    fontSize: "18px",
+    color: "#666",
+    marginBottom: "10px",
+  },
+  description: {
+    fontSize: "16px",
+    color: "#555",
+  },
+  image: {
+    width: "100%",
+    height: "auto",
+    borderRadius: "8px",
+    marginTop: "15px",
+  },
+  error: {
+    color: "red",
+    marginTop: "10px",
+  },
+  buttonContainer: {
+    display: "flex",
+    justifyContent: "center",
+    marginTop: "15px",
+  },
+  editButton: {
+    backgroundColor: "#4CAF50",
+    color: "white",
+    padding: "10px 20px",
+    borderRadius: "5px",
+    marginRight: "10px",
+    cursor: "pointer",
+    border: "none",
+  },
+  deleteButton: {
+    backgroundColor: "#f44336",
+    color: "white",
+    padding: "10px 20px",
+    borderRadius: "5px",
+    cursor: "pointer",
+    border: "none",
+  },
 };
 
 export default BookingCard;

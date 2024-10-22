@@ -5,7 +5,7 @@ import SignUp from "./pages/signup";
 import Booking from "./pages/admin/bookings";
 import NoPage from "./pages/noPage";
 import NavBar from "./components/nav";
-import Payment from "./pages/payment";
+// import Payment from "./pages/payment";
 import History from "./pages/history";
 import Profile from "./pages/profile";
 import AdmitSignIn from "./pages/admin/signin";
@@ -30,7 +30,7 @@ function App() {
             <Route path="/adminsignup" element={<AdmitSignUp />} />{" "}
             {/* Admin SignUp */}
             <Route path="/accomodation" element={<Accommodation />} />
-            <Route path="/payment" element={<Payment />} />
+            {/* <Route path="/payment" element={<Payment />} /> */}
             <Route path="/history" element={<History />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/adminProfile" element={<AdminProfile />} />

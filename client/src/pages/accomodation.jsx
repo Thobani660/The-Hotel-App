@@ -1,67 +1,72 @@
-import React, { useState, useEffect } from 'react';
-import BookingCard from './admin/bookingcard'; // Assuming you have a BookingCard component
+// src/pages/Accommodations.jsx
+import React, { useEffect, useState } from "react";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../firebase"; // Adjust the path as needed
+import BookingCard from "./admin/BookingCard"; // Import the BookingCard component
 
-const Accommodation = () => {
-    const [accommodations, setAccommodations] = useState([]);
-    const [loading, setLoading] = useState(true); // To manage loading state
-    const [error, setError] = useState(null); // To manage error state
+const Accommodations = () => {
+  const [bookings, setBookings] = useState([]);
+  const [error, setError] = useState(null);
 
-    // Function to fetch accommodations data
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetch('/api/accommodations'); // Replace with your actual API endpoint
-                if (!response.ok) {
-                    throw new Error('Failed to fetch accommodations');
-                }
-                const data = await response.json();
-                setAccommodations(data); // Assuming data is an array of accommodations
-            } catch (err) {
-                setError(err.message); // Handle error
-            } finally {
-                setLoading(false); // Disable loading once the data is fetched
-            }
-        };
-
-        fetchData();
-    }, []);
-
-    const handleEdit = (id) => {
-        // Handle edit logic here
-        console.log('Edit booking with id:', id);
+  // Fetch the bookings data from Firestore
+  useEffect(() => {
+    const fetchBookings = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "bookings"));
+        const bookingsData = querySnapshot.docs.map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+        }));
+        setBookings(bookingsData);
+      } catch (err) {
+        setError("Error fetching bookings. Please try again later.");
+        console.error("Error fetching bookings:", err);
+      }
     };
 
-    const handleDelete = (id) => {
-        // Handle delete logic here
-        console.log('Delete booking with id:', id);
-        // Optionally remove the accommodation from the list in UI
-        setAccommodations(accommodations.filter(booking => booking.id !== id));
-    };
+    fetchBookings();
+  }, []);
 
-    if (loading) {
-        return <p>Loading accommodations...</p>; // Show a loading state
-    }
-
-    if (error) {
-        return <p>Error: {error}</p>; // Show an error message
-    }
-
-    return (
-        <div>
-            {accommodations && accommodations.length > 0 ? (
-                accommodations.map((booking) => (
-                    <BookingCard
-                        key={booking.id}
-                        booking={booking}
-                        onEdit={() => handleEdit(booking.id)}
-                        onDelete={() => handleDelete(booking.id)}
-                    />
-                ))
-            ) : (
-                <p>No accommodations available.</p> // Fallback UI if no data
-            )}
-        </div>
-    );
+  return (
+    <div style={styles.container}>
+      <h1 style={styles.heading}>Accommodations</h1>
+      {error && <p style={styles.error}>{error}</p>}
+      <div style={styles.bookingsGrid}>
+        {bookings.length > 0 ? (
+          bookings.map((booking) => (
+            <BookingCard key={booking.id} booking={booking} />
+          ))
+        ) : (
+          <p>No accommodations available at the moment.</p>
+        )}
+      </div>
+    </div>
+  );
 };
 
-export default Accommodation;
+// Styles
+const styles = {
+  container: {
+    padding: "30px",
+    backgroundColor: "#f4f5f7",
+    minHeight: "100vh",
+  },
+  heading: {
+    textAlign: "center",
+    fontSize: "32px",
+    color: "#333",
+    marginBottom: "30px",
+  },
+  error: {
+    textAlign: "center",
+    color: "red",
+    marginBottom: "20px",
+  },
+  bookingsGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+    gap: "20px",
+  },
+};
+
+export default Accommodations;

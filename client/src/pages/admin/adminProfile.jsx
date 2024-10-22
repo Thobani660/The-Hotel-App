@@ -1,12 +1,13 @@
+// src/pages/admin/adminProfile.jsx
 import React, { useEffect, useState } from "react";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import { auth, db } from "../../firebase"; // Ensure correct import for Firebase
+import { auth, db } from "../../firebase";
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../../features/authSlice"; // Adjust path as necessary
+import { logout } from "../../features/authSlice";
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from "firebase/firestore";
-import { setBookings, addBooking, updateBooking, deleteBooking } from "../../features/bookingsSlice"; // Redux slice actions
-import BookingForm from "./bookingForm"; // Ensure correct import
-import Accommodation from "../accomodation"; // Ensure correct import
+import { setBookings, addBooking, updateBooking, deleteBooking } from "../../features/bookingsSlice";
+import BookingForm from "./bookingForm";  // Ensure this import matches your file structure
+import BookingCard from "./BookingCard";  // Import the BookingCard component
 
 function AdminProfile() {
     const [admin, setAdmin] = useState(null);
@@ -18,13 +19,15 @@ function AdminProfile() {
         title: "",
         subheader: "",
         description: "",
+        price: "",
         imageUrl: "",
     });
     const [avatarUrl, setAvatarUrl] = useState("");
     const [showAvatarInput, setShowAvatarInput] = useState(false);
+    const [submittedBooking, setSubmittedBooking] = useState(null);  // Store the submitted booking
 
     const dispatch = useDispatch();
-    const bookings = useSelector((state) => state.bookings.bookings);
+    const bookings = useSelector((state) => state.bookings.bookings); // Access bookings from Redux
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -53,6 +56,7 @@ function AdminProfile() {
         } catch (error) {
             console.error("Error fetching bookings:", error);
         }
+        console.log(bookings , "bookimgsssss")
     };
 
     const handleLogOff = async () => {
@@ -64,10 +68,6 @@ function AdminProfile() {
             console.error("Error logging off:", err);
         }
     };
-
-    if (error) {
-        return <p>{error}</p>;
-    }
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -88,10 +88,9 @@ function AdminProfile() {
         }
     };
 
-    const handleSubmit = async (formDataWithImage) => {
+    const handleSubmit = async () => {
         try {
             let newBooking;
-    
             if (editMode && formData.id) {
                 // Update booking
                 await updateDoc(doc(db, "bookings", formData.id), { ...formData, imageUrl: avatarUrl });
@@ -102,48 +101,45 @@ function AdminProfile() {
                 // Add booking
                 const docRef = await addDoc(collection(db, "bookings"), { ...formData, imageUrl: avatarUrl });
                 newBooking = { ...formData, id: docRef.id, imageUrl: avatarUrl };
-                dispatch(addBooking(newBooking)); // Update Redux store with the new booking
+                dispatch(addBooking(newBooking)); 
                 alert("Booking added successfully!");
             }
-    
+
+            // Set submitted booking to show the card
+            setSubmittedBooking(newBooking);
+
             // Reset form and hide it after submission
-            setFormData({ id: null, title: "", subheader: "", description: "", imageUrl: "" });
+            setFormData({ id: null, title: "", subheader: "", description: "", price: "", imageUrl: "" });
             setIsFormVisible(false);
             setShowAvatarInput(false);
-            
-            // Return the newBooking to be used for immediate display
-            return newBooking;
-    
         } catch (error) {
             console.error("Error saving booking:", error);
         }
     };
-    
-    
-
     const handleEdit = (id) => {
-        const bookingToEdit = bookings.find((b) => b.id === id);
-        setFormData(bookingToEdit);
-        setAvatarUrl(bookingToEdit.imageUrl);
-        setIsFormVisible(true);
-        setEditMode(true);
-        setShowAvatarInput(true);
+      const bookingToEdit = bookings.find((b) => b.id === id);
+      setFormData(bookingToEdit);
+      setAvatarUrl(bookingToEdit.imageUrl);
+      setIsFormVisible(true);
+      setEditMode(true);
+      setShowAvatarInput(true);
     };
-
+    
     const handleDelete = async (id) => {
-        try {
-            await deleteDoc(doc(db, "bookings", id));
-            dispatch(deleteBooking(id));
-            alert("Booking deleted successfully!");
-        } catch (error) {
-            console.error("Error deleting booking:", error);
-        }
+      try {
+        await deleteDoc(doc(db, "bookings", id));
+        dispatch(deleteBooking(id));
+        alert("Booking deleted successfully!");
+      } catch (error) {
+        console.error("Error deleting booking:", error);
+      }
     };
+    
 
     const toggleFormVisibility = () => {
         setIsFormVisible((prev) => !prev);
         setEditMode(false);
-        setFormData({ id: null, title: "", subheader: "", description: "", imageUrl: "" });
+        setFormData({ id: null, title: "", subheader: "", description: "", price: "", imageUrl: "" });
         setAvatarUrl("");
         setShowAvatarInput(false);
     };
@@ -164,8 +160,7 @@ function AdminProfile() {
                             <strong>Email:</strong> {admin.email}
                         </div>
                         <div style={styles.infoItem}>
-                            <strong>Name:</strong>{" "}
-                            {admin.displayName || "No display name available"}
+                            <strong>Name:</strong> {admin.displayName || "No display name available"}
                         </div>
                         {showAvatarInput && (
                             <div style={styles.infoItem}>
@@ -200,120 +195,114 @@ function AdminProfile() {
                     />
                 )}
 
-                {/* Render the accommodation cards */}
-                <Accommodation
-                    bookings={bookings}
-                    handleEdit={handleEdit}
-                    handleDelete={handleDelete}
-                />
+                {/* Check if bookings exist before rendering them */}
+                {bookings && bookings.length > 0 ? (
+                    bookings.map((booking) => (
+                        <BookingCard
+                            key={booking.id}
+                            booking={booking}
+                            onEdit={() => handleEdit(booking.id)}
+                            onDelete={() => handleDelete(booking.id)}
+                        />
+                    ))
+                ) : (
+                    <p>No bookings available.</p>
+                )}
             </div>
         </div>
     );
 }
 
-// Your styles
+// Styles
 const styles = {
-  container: {
-    display: "flex",
-    justifyContent: "space-between",
-    backgroundColor: "#f4f5f7",
-    padding: "10px",
-    borderRadius: "15px",
-    border: "2px solid #eaeaea",
-<<<<<<< HEAD
-    width: "100%",
-    maxWidth: "1200px",
-    margin: "auto",
-    marginTop: "-13px",
-=======
-    width: "100vw",  // Make sure to take full width of the viewport
-    height: "100vh", // Make sure to take full height of the viewport
-    margin: "0",
->>>>>>> 3b494c0e467aa2c8445a5ccbba80babfb5cf1b93
-    boxShadow: "0 4px 12px grey",
-  },
-  profileCard: {
-    backgroundColor: "#fff",
-    width: "30%",
-    height: "800px", // Allow it to grow as needed
-    padding: "30px",
-    borderRadius: "15px",
-    textAlign: "center",
-    boxShadow: "0 4px 12px grey",
-    overflow: "auto",
-    position:"fixed" // Handle overflow if content is large
-  },
-  avatarContainer: {
-    display: "flex",
-    justifyContent: "center",
-    marginBottom: "20px",
-  },
-  avatar: {
-    width: "120px",
-    height: "120px",
-    borderRadius: "50%",
-    objectFit: "cover",
-  },
-  heading: {
-    fontSize: "24px",
-    color: "#333",
-    marginBottom: "20px",
-    fontWeight: "bold",
-  },
-  infoContainer: {
-    marginBottom: "30px",
-  },
-  infoItem: {
-    fontSize: "16px",
-    color: "#555",
-    marginBottom: "10px",
-  },
-  fileInput: {
-    marginTop: "10px",
-    padding: "5px",
-  },
-  buttonContainer: {
-    display: "flex",
-    justifyContent: "space-between",
-  },
-  editButton: {
-    backgroundColor: "#4CAF50",
-    color: "#fff",
-    border: "none",
-    borderRadius: "5px",
-    padding: "10px 20px",
-    cursor: "pointer",
-    fontSize: "16px",
-  },
-  logOffButton: {
-    backgroundColor: "#F44336",
-    color: "#fff",
-    border: "none",
-    borderRadius: "5px",
-    padding: "10px 20px",
-    cursor: "pointer",
-    fontSize: "16px",
-  },
-  createButton: {
-    backgroundColor: "#007BFF",
-    color: "#fff",
-    border: "none",
-    borderRadius: "5px",
-    padding: "10px 20px",
-    cursor: "pointer",
-    fontSize: "16px",
-    marginBottom: "20px",
-  },
-  detailsSection: {
-    width: "65%",
-    height: "auto", // Allow it to grow as needed
-    backgroundColor: "#fff",
-    padding: "30px",
-    borderRadius: "15px",
-    boxShadow: "0 4px 12px grey",
-    overflow: "auto", 
-    marginLeft:"650px"// Handle overflow if content is large
-  },
+    container: {
+        display: "flex",
+        justifyContent: "space-between",
+        backgroundColor: "#f4f5f7",
+        padding: "10px",
+        width: "100%",
+        height: "100vh",
+        marginTop: "70px", 
+        marginBottom: "50px", 
+        boxSizing: "border-box", 
+        boxShadow: "0 4px 12px grey",
+    },
+    profileCard: {
+        backgroundColor: "#fff",
+        width: "40%",
+        padding: "30px",
+        borderRadius: "15px",
+        textAlign: "center",
+        boxShadow: "0 4px 12px grey",
+        overflow: "auto",
+    },
+    avatarContainer: {
+        display: "flex",
+        justifyContent: "center",
+        marginBottom: "20px",
+    },
+    avatar: {
+        width: "120px",
+        height: "120px",
+        borderRadius: "50%",
+        objectFit: "cover",
+    },
+    heading: {
+        fontSize: "24px",
+        color: "#333",
+        marginBottom: "20px",
+        fontWeight: "bold",
+    },
+    infoContainer: {
+        marginBottom: "30px",
+    },
+    infoItem: {
+        fontSize: "16px",
+        color: "#555",
+        marginBottom: "10px",
+    },
+    fileInput: {
+        marginTop: "10px",
+        padding: "5px",
+    },
+    buttonContainer: {
+        display: "flex",
+        justifyContent: "space-between",
+    },
+    editButton: {
+        backgroundColor: "#4CAF50",
+        color: "white",
+        padding: "10px 20px",
+        borderRadius: "5px",
+        border: "none",
+        cursor: "pointer",
+    },
+    logOffButton: {
+        backgroundColor: "#f44336",
+        color: "white",
+        padding: "10px 20px",
+        borderRadius: "5px",
+        border: "none",
+        cursor: "pointer",
+    },
+    detailsSection: {
+        backgroundColor: "#fff",
+        width: "50%",
+        padding: "20px",
+        borderRadius: "15px",
+        boxShadow: "0 4px 12px grey",
+        overflowY: "auto",
+    },
+    createButton: {
+        backgroundColor: "#000080",
+        color: "white",
+        padding: "10px 20px",
+        borderRadius: "5px",
+        border: "none",
+        cursor: "pointer",
+        display: "block",
+        marginBottom: "20px",
+    },
 };
 
 export default AdminProfile;
