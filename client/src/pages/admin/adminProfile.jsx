@@ -6,8 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../features/authSlice";
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from "firebase/firestore";
 import { setBookings, addBooking, updateBooking, deleteBooking } from "../../features/bookingsSlice";
-import BookingForm from "./bookingForm";  // Ensure this import matches your file structure
-import BookingCard from "./BookingCard";  // Import the BookingCard component
+import BookingCard from "./bookingcard";  
+import BookingForm from "./bookingsForm";
 
 function AdminProfile() {
     const [admin, setAdmin] = useState(null);
@@ -22,12 +22,9 @@ function AdminProfile() {
         price: "",
         imageUrl: "",
     });
-    const [avatarUrl, setAvatarUrl] = useState("");
-    const [showAvatarInput, setShowAvatarInput] = useState(false);
-    const [submittedBooking, setSubmittedBooking] = useState(null);  // Store the submitted booking
 
     const dispatch = useDispatch();
-    const bookings = useSelector((state) => state.bookings.bookings); // Access bookings from Redux
+    const bookings = useSelector((state) => state.bookings.bookings); 
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -38,7 +35,6 @@ function AdminProfile() {
                     displayName: user.displayName,
                     photoURL: user.photoURL || "",
                 });
-                setAvatarUrl(user.photoURL || "");
                 await fetchBookings();
             } else {
                 setError("No admin is logged in");
@@ -56,7 +52,6 @@ function AdminProfile() {
         } catch (error) {
             console.error("Error fetching bookings:", error);
         }
-        console.log(bookings , "bookimgsssss")
     };
 
     const handleLogOff = async () => {
@@ -69,87 +64,46 @@ function AdminProfile() {
         }
     };
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: value,
-        }));
-    };
-
-    const handleAvatarChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setAvatarUrl(reader.result);
-            };
-            reader.readAsDataURL(file);
-        }
-    };
-
-    const handleSubmit = async () => {
+    const handleSubmit = async (formData) => {
         try {
-            let newBooking;
             if (editMode && formData.id) {
-                // Update booking
-                await updateDoc(doc(db, "bookings", formData.id), { ...formData, imageUrl: avatarUrl });
-                newBooking = { ...formData, id: formData.id, imageUrl: avatarUrl };
-                dispatch(updateBooking(newBooking));
+                await updateDoc(doc(db, "bookings", formData.id), formData);
+                dispatch(updateBooking(formData));
                 alert("Booking updated successfully!");
             } else {
-                // Add booking
-                const docRef = await addDoc(collection(db, "bookings"), { ...formData, imageUrl: avatarUrl });
-                newBooking = { ...formData, id: docRef.id, imageUrl: avatarUrl };
-                dispatch(addBooking(newBooking)); 
+                const docRef = await addDoc(collection(db, "bookings"), formData);
+                const newBooking = { ...formData, id: docRef.id };
+                dispatch(addBooking(newBooking));
                 alert("Booking added successfully!");
             }
 
-            // Set submitted booking to show the card
-            setSubmittedBooking(newBooking);
-
-            // Reset form and hide it after submission
-            setFormData({ id: null, title: "", subheader: "", description: "", price: "", imageUrl: "" });
             setIsFormVisible(false);
-            setShowAvatarInput(false);
+            setEditMode(false);
         } catch (error) {
             console.error("Error saving booking:", error);
         }
     };
-    const handleEdit = (id) => {
-      const bookingToEdit = bookings.find((b) => b.id === id);
-      setFormData(bookingToEdit);
-      setAvatarUrl(bookingToEdit.imageUrl);
-      setIsFormVisible(true);
-      setEditMode(true);
-      setShowAvatarInput(true);
-    };
-    
-    const handleDelete = async (id) => {
-      try {
-        await deleteDoc(doc(db, "bookings", id));
-        dispatch(deleteBooking(id));
-        alert("Booking deleted successfully!");
-      } catch (error) {
-        console.error("Error deleting booking:", error);
-      }
-    };
-    
 
-    const toggleFormVisibility = () => {
-        setIsFormVisible((prev) => !prev);
-        setEditMode(false);
-        setFormData({ id: null, title: "", subheader: "", description: "", price: "", imageUrl: "" });
-        setAvatarUrl("");
-        setShowAvatarInput(false);
+    const handleEdit = (id) => {
+        const bookingToEdit = bookings.find((b) => b.id === id);
+        setFormData(bookingToEdit);
+        setIsFormVisible(true);
+        setEditMode(true);
+    };
+
+    const handleDelete = async (id) => {
+        try {
+            await deleteDoc(doc(db, "bookings", id));
+            dispatch(deleteBooking(id));
+            alert("Booking deleted successfully!");
+        } catch (error) {
+            console.error("Error deleting booking:", error);
+        }
     };
 
     return (
         <div style={styles.container}>
             <div style={styles.profileCard}>
-                <div style={styles.avatarContainer}>
-                    <img src={avatarUrl || "https://via.placeholder.com/120"} alt="Avatar" style={styles.avatar} />
-                </div>
                 <h1 style={styles.heading}>Admin Profile</h1>
                 {admin ? (
                     <div style={styles.infoContainer}>
@@ -162,48 +116,34 @@ function AdminProfile() {
                         <div style={styles.infoItem}>
                             <strong>Name:</strong> {admin.displayName || "No display name available"}
                         </div>
-                        {showAvatarInput && (
-                            <div style={styles.infoItem}>
-                                <strong>Profile Picture:</strong>
-                                <input type="file" accept="image/*" onChange={handleAvatarChange} style={styles.fileInput} />
-                            </div>
-                        )}
                     </div>
                 ) : (
                     <p>No admin data available.</p>
                 )}
-                <div style={styles.buttonContainer}>
-                    <button style={styles.editButton} onClick={() => setShowAvatarInput((prev) => !prev)}>
-                        {editMode ? "Hide Avatar Input" : "Edit"}
-                    </button>
-                    <button style={styles.logOffButton} onClick={handleLogOff}>
-                        LogOff
-                    </button>
-                </div>
+                <button style={styles.logOffButton} onClick={handleLogOff}>
+                    Log Off
+                </button>
             </div>
 
             <div style={styles.detailsSection}>
-                <button style={styles.createButton} onClick={toggleFormVisibility}>
-                    {isFormVisible ? (editMode ? "Cancel Edit" : "Hide Create Hotel Form") : "Create a Hotel"}
+                <button style={styles.createButton} onClick={() => setIsFormVisible((prev) => !prev)}>
+                    {isFormVisible ? "Cancel" : "Create a Hotel"}
                 </button>
 
                 {isFormVisible && (
-                    <BookingForm
-                        formData={formData}
-                        handleChange={handleChange}
-                        handleSubmit={handleSubmit}
-                    />
+                    <BookingForm onSubmit={handleSubmit} />
                 )}
 
-                {/* Check if bookings exist before rendering them */}
                 {bookings && bookings.length > 0 ? (
                     bookings.map((booking) => (
-                        <BookingCard
-                            key={booking.id}
-                            booking={booking}
-                            onEdit={() => handleEdit(booking.id)}
-                            onDelete={() => handleDelete(booking.id)}
-                        />
+                      <BookingCard
+                      key={booking.id}
+                      booking={booking}
+                      onEdit={() => handleEdit(booking.id)}
+                      onDelete={() => handleDelete(booking.id)}
+                      isAdmin={true} // or false, depending on the user’s role
+                    />
+                    
                     ))
                 ) : (
                     <p>No bookings available.</p>
@@ -218,7 +158,7 @@ const styles = {
     container: {
         display: "flex",
         justifyContent: "space-between",
-        backgroundColor: "#f4f5f7",
+        backgroundColor: "rgba(0, 0, 128, 0.43)",
         padding: "10px",
         width: "100%",
         height: "100vh",
@@ -228,7 +168,7 @@ const styles = {
         boxShadow: "0 4px 12px grey",
     },
     profileCard: {
-        backgroundColor: "#fff",
+        backgroundColor: "rgba(0, 0, 128, 0.43)",
         width: "40%",
         padding: "30px",
         borderRadius: "15px",
@@ -286,7 +226,7 @@ const styles = {
         cursor: "pointer",
     },
     detailsSection: {
-        backgroundColor: "#fff",
+        backgroundColor: "rgba(0, 0, 128, 0.43)",
         width: "50%",
         padding: "20px",
         borderRadius: "15px",

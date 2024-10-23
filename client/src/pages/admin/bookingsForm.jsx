@@ -1,7 +1,6 @@
-// src/pages/admin/BookingForm.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-const BookingForm = ({ onSubmit }) => {
+const BookingForm = ({ onSubmit, initialData = {} }) => {
     const [formData, setFormData] = useState({
         title: '',
         subheader: '',
@@ -9,6 +8,12 @@ const BookingForm = ({ onSubmit }) => {
         price: '',
         imageUrl: ''
     });
+
+    useEffect(() => {
+        if (initialData && Object.keys(initialData).length > 0) {
+            setFormData(initialData);
+        }
+    }, [initialData]);
 
     const handleChange = (e) => {
         setFormData({
@@ -19,7 +24,7 @@ const BookingForm = ({ onSubmit }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        onSubmit(formData); // Pass form data to the parent component
+        onSubmit(formData); // Pass form data to parent (AdminProfile)
         setFormData({
             title: '',
             subheader: '',
@@ -65,6 +70,7 @@ const BookingForm = ({ onSubmit }) => {
                 placeholder="Price"
                 required
                 style={styles.input}
+                min="0"
             />
             <input
                 type="url"

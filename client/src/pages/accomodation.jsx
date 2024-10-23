@@ -1,8 +1,7 @@
-// src/pages/Accommodations.jsx
 import React, { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase"; // Adjust the path as needed
-import BookingCard from "./admin/BookingCard"; // Import the BookingCard component
+import BookingCard from "./admin/BookingCard"; // Correct component import
 
 const Accommodations = () => {
   const [bookings, setBookings] = useState([]);
@@ -34,7 +33,11 @@ const Accommodations = () => {
       <div style={styles.bookingsGrid}>
         {bookings.length > 0 ? (
           bookings.map((booking) => (
-            <BookingCard key={booking.id} booking={booking} />
+            <BookingCard
+              key={booking.id}
+              booking={booking}
+              isAdmin={false} // Disable admin features like edit/delete for this view
+            />
           ))
         ) : (
           <p>No accommodations available at the moment.</p>

@@ -157,72 +157,82 @@ function UserProfile() {
 const styles = {
   container: {
     display: "flex",
-    justifyContent: "center",
-    backgroundColor: "#f4f5f7",
+    justifyContent: "space-between",
+    backgroundColor: "rgba(0, 0, 128, 0.43)",
     padding: "10px",
-    borderRadius: "15px",
-    border: "2px solid #eaeaea",
     width: "100%",
-    maxWidth: "1200px",
-    margin: "auto",
-    marginTop: "-13px",
+    height: "100vh",
+    marginTop: "70px", 
+    marginBottom: "50px", 
+    boxSizing: "border-box", 
     boxShadow: "0 4px 12px grey",
-  },
-  profileCard: {
-    backgroundColor: "#fff",
+},
+profileCard: {
+    backgroundColor: "rgba(0, 0, 128, 0.43)",
     width: "40%",
     padding: "30px",
     borderRadius: "15px",
     textAlign: "center",
     boxShadow: "0 4px 12px grey",
-  },
-  avatarContainer: {
+    overflow: "auto",
+},
+avatarContainer: {
     display: "flex",
     justifyContent: "center",
     marginBottom: "20px",
-  },
-  avatar: {
+},
+avatar: {
     width: "120px",
     height: "120px",
-    backgroundColor: "#3b5998",
     borderRadius: "50%",
-  },
-  heading: {
+    objectFit: "cover",
+},
+heading: {
     fontSize: "24px",
     color: "#333",
     marginBottom: "20px",
     fontWeight: "bold",
-  },
-  infoContainer: {
+},
+infoContainer: {
     marginBottom: "30px",
-  },
-  infoItem: {
+},
+infoItem: {
     fontSize: "16px",
     color: "#555",
     marginBottom: "10px",
-  },
-  buttonContainer: {
+},
+fileInput: {
+    marginTop: "10px",
+    padding: "5px",
+},
+buttonContainer: {
     display: "flex",
     justifyContent: "space-between",
-  },
-  editButton: {
+},
+editButton: {
     backgroundColor: "#4CAF50",
-    color: "#fff",
-    border: "none",
-    borderRadius: "5px",
+    color: "white",
     padding: "10px 20px",
-    cursor: "pointer",
-    fontSize: "16px",
-  },
-  logOffButton: {
-    backgroundColor: "#F44336",
-    color: "#fff",
-    border: "none",
     borderRadius: "5px",
-    padding: "10px 20px",
+    border: "none",
     cursor: "pointer",
-    fontSize: "16px",
-  },
+},
+logOffButton: {
+    backgroundColor: "#f44336",
+    color: "white",
+    padding: "10px 20px",
+    borderRadius: "5px",
+    border: "none",
+    cursor: "pointer",
+},
+detailsSection: {
+    backgroundColor: "#fff",
+    width: "50%",
+    padding: "20px",
+    borderRadius: "15px",
+    boxShadow: "0 4px 12px grey",
+    overflowY: "auto",
+},
   saveButton: {
     backgroundColor: "#4CAF50",
     color: "#fff",
