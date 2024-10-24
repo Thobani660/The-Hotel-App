@@ -4,7 +4,7 @@ import { onAuthStateChanged, signOut, updateProfile, updateEmail } from "firebas
 import { auth } from "../firebase"; 
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../features/authSlice";
-import { removeFavourite } from "../features/favouritesSlice";
+import { removeFavourite, addFavourite } from "../features/favouritesSlice";
 
 function UserProfile() {
   const [user, setUser] = useState(null);
@@ -99,6 +99,10 @@ function UserProfile() {
 
   const handleRemoveFavourite = (favourite) => {
     dispatch(removeFavourite(favourite));
+  };
+
+  const handleAddFavourite = (accommodation) => {
+    dispatch(addFavourite(accommodation));
   };
 
   // Simulated function to mark payment as successful
@@ -281,48 +285,49 @@ const styles = {
     overflowY: "auto",
   },
   favouritesGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(2, 1fr)", // Two cards per row
-    gap: "10px",
+    display: "flex",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
   },
   favouriteCard: {
-    backgroundColor: "#e6f7ff",
-    padding: "15px",
+    backgroundColor: "#f9f9f9",
+    border: "1px solid #ddd",
     borderRadius: "10px",
-    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-    transition: "transform 0.2s",
-    width:"40%"
+    padding: "10px",
+    width: "30%",
+    margin: "10px",
+    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+    textAlign: "center",
   },
   favouriteTitle: {
-    fontSize: "20px",
-    color: "#333",
+    fontSize: "18px",
+    fontWeight: "bold",
   },
   favouriteDescription: {
-    fontSize: "16px",
+    fontSize: "14px",
     color: "#666",
   },
   favouriteImage: {
     width: "100%",
     height: "auto",
-    borderRadius: "8px",
+    borderRadius: "10px",
   },
   removeButton: {
     backgroundColor: "#f44336",
-    color: "white",
-    padding: "10px",
-    borderRadius: "5px",
+    color: "#fff",
     border: "none",
+    borderRadius: "5px",
+    padding: "5px 10px",
     cursor: "pointer",
-    marginTop: "10px",
   },
   successCard: {
-    backgroundColor: "#dff0d8",
-    border: "1px solid #d6e9c6",
-    color: "#3c763d",
-    padding: "15px",
+    backgroundColor: "#d4edda",
+    color: "#155724",
+    border: "1px solid #c3e6cb",
     borderRadius: "5px",
+    padding: "10px",
     marginTop: "20px",
-  },
+  }
 };
 
 export default UserProfile;

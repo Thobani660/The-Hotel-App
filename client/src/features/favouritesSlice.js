@@ -6,13 +6,25 @@ const favouritesSlice = createSlice({
   initialState: [],
   reducers: {
     addFavourite: (state, action) => {
-      state.push(action.payload);
+      // Add the new favourite if it doesn't already exist
+      const existingFavourite = state.find(favourite => favourite.id === action.payload.id);
+      if (!existingFavourite) {
+        state.push(action.payload);
+      }
     },
     removeFavourite: (state, action) => {
+      // Remove the favourite that matches the id
       return state.filter(favourite => favourite.id !== action.payload.id);
+    },
+    clearFavourites: (state) => {
+      // Clear all favourites
+      return [];
     },
   },
 });
 
-export const { addFavourite, removeFavourite } = favouritesSlice.actions;
+// Export actions for use in components
+export const { addFavourite, removeFavourite, clearFavourites } = favouritesSlice.actions;
+
+// Export the reducer to be included in the store
 export default favouritesSlice.reducer;

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-// import { addFavourite } from "../../features/favouritesSlice"; // Assuming you have a favourites slice
+import { addBooking } from "../../features/bookingsSlice"; // Import the addBooking action
 import { initiateStripePayment } from "../../utils/stripePayment"; // Stripe payment helper function
 
 const BookingFormCard = () => {
@@ -12,31 +12,46 @@ const BookingFormCard = () => {
     imageUrl: ''
   });
   
+  const [imagePreview, setImagePreview] = useState('');
   const [showCard, setShowCard] = useState(false);
   const dispatch = useDispatch();
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: value
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+        setFormData((prev) => ({
+          ...prev,
+          imageUrl: reader.result
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setShowCard(true); // Show card on form submit
+    dispatch(addBooking({ ...formData, id: Date.now() })); // Add a unique ID to the booking
+    alert("Booking submitted successfully!");
+    setShowCard(true);
   };
 
   const handleBookNow = async () => {
     try {
-      await initiateStripePayment(formData.price); // Trigger payment with Stripe
+      await initiateStripePayment(formData.price);
     } catch (error) {
       console.error("Payment failed:", error);
     }
-  };
-
-  const handleSaveAsFavourite = () => {
-    dispatch(addFavourite(formData)); // Dispatch action to save booking as favourite
   };
 
   return (
@@ -84,8 +99,14 @@ const BookingFormCard = () => {
             name="imageUrl"
             value={formData.imageUrl}
             onChange={handleChange}
-            placeholder="Image URL"
-            required
+            placeholder="Image URL (optional)"
+            style={styles.input}
+          />
+          <input
+            type="file"
+            name="imageFile"
+            accept="image/*"
+            onChange={handleImageUpload}
             style={styles.input}
           />
           <button type="submit" style={styles.submitButton}>Submit</button>
@@ -96,16 +117,16 @@ const BookingFormCard = () => {
           <h4 style={styles.subheader}>{formData.subheader}</h4>
           <p style={styles.description}>{formData.description}</p>
           {formData.imageUrl && (
-            <img src={formData.imageUrl} alt="Accommodation" style={styles.image} />
+            <img
+              src={imagePreview || formData.imageUrl}
+              alt="Accommodation"
+              style={styles.image}
+            />
           )}
           <p style={styles.price}>Price: ${formData.price}</p>
-
           <div style={styles.buttonContainer}>
             <button style={styles.bookButton} onClick={handleBookNow}>
               Book Now
-            </button>
-            <button style={styles.saveButton} onClick={handleSaveAsFavourite}>
-              Save as Favourite
             </button>
           </div>
         </div>
@@ -185,15 +206,6 @@ const styles = {
   },
   bookButton: {
     backgroundColor: '#007BFF',
-    color: 'white',
-    padding: '10px 20px',
-    borderRadius: '5px',
-    marginRight: '10px',
-    cursor: 'pointer',
-    border: 'none',
-  },
-  saveButton: {
-    backgroundColor: '#FFA500',
     color: 'white',
     padding: '10px 20px',
     borderRadius: '5px',

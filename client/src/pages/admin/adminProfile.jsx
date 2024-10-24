@@ -220,7 +220,7 @@ const styles = {
     },
     profileCard: {
         backgroundColor: "#ffffff", // White background for profile card
-        width: "40%",
+        width: "30%",
         padding: "30px",
         borderRadius: "15px",
         textAlign: "center",
@@ -277,7 +277,7 @@ const styles = {
     },
     detailsSection: {
         backgroundColor: "#ffffff", // White background for details section
-        width: "50%",
+        width: "68%",
         padding: "20px",
         borderRadius: "15px",
         boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)", // Softer shadow
