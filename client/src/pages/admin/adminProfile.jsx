@@ -4,9 +4,16 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth, db } from "../../firebase";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../features/authSlice";
-import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from "firebase/firestore";
+import {
+    collection,
+    getDocs,
+    addDoc,
+    updateDoc,
+    deleteDoc,
+    doc,
+} from "firebase/firestore";
 import { setBookings, addBooking, updateBooking, deleteBooking } from "../../features/bookingsSlice";
-import BookingCard from "./bookingcard";  
+import BookingCard from "./bookingcard";
 import BookingForm from "./bookingsForm";
 
 function AdminProfile() {
@@ -22,9 +29,11 @@ function AdminProfile() {
         price: "",
         imageUrl: "",
     });
+    const [profilePic, setProfilePic] = useState(null);
+    const [imageUrl, setImageUrl] = useState("");
 
     const dispatch = useDispatch();
-    const bookings = useSelector((state) => state.bookings.bookings); 
+    const bookings = useSelector((state) => state.bookings.bookings);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -101,12 +110,47 @@ function AdminProfile() {
         }
     };
 
+    const handleProfilePicChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setProfilePic(file);
+                setImageUrl(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handleProfileUpdate = async () => {
+        if (profilePic) {
+            // Handle uploading the image to Firebase Storage and update the user profile
+            // This code should be implemented based on your Firebase Storage setup
+            const storageRef = firebase.storage().ref();
+            const profilePicRef = storageRef.child(`profilePics/${admin.uid}`);
+            await profilePicRef.put(profilePic);
+            const url = await profilePicRef.getDownloadURL();
+
+            // Update user profile
+            await updateDoc(doc(db, "admins", admin.uid), { photoURL: url });
+            setAdmin({ ...admin, photoURL: url });
+            alert("Profile picture updated successfully!");
+        }
+    };
+
     return (
         <div style={styles.container}>
             <div style={styles.profileCard}>
                 <h1 style={styles.heading}>Admin Profile</h1>
                 {admin ? (
                     <div style={styles.infoContainer}>
+                        <div style={styles.avatarContainer}>
+                            <img
+                                src={admin.photoURL || "/default-avatar.png"}
+                                alt="Admin Avatar"
+                                style={styles.avatar}
+                            />
+                        </div>
                         <div style={styles.infoItem}>
                             <strong>Admin UID:</strong> {admin.uid}
                         </div>
@@ -116,6 +160,14 @@ function AdminProfile() {
                         <div style={styles.infoItem}>
                             <strong>Name:</strong> {admin.displayName || "No display name available"}
                         </div>
+                        <input
+                            type="file"
+                            onChange={handleProfilePicChange}
+                            style={styles.fileInput}
+                        />
+                        <button style={styles.uploadButton} onClick={handleProfileUpdate}>
+                            Update Profile Picture
+                        </button>
                     </div>
                 ) : (
                     <p>No admin data available.</p>
@@ -136,14 +188,13 @@ function AdminProfile() {
 
                 {bookings && bookings.length > 0 ? (
                     bookings.map((booking) => (
-                      <BookingCard
-                      key={booking.id}
-                      booking={booking}
-                      onEdit={() => handleEdit(booking.id)}
-                      onDelete={() => handleDelete(booking.id)}
-                      isAdmin={true} // or false, depending on the user’s role
-                    />
-                    
+                        <BookingCard
+                            key={booking.id}
+                            booking={booking}
+                            onEdit={() => handleEdit(booking.id)}
+                            onDelete={() => handleDelete(booking.id)}
+                            isAdmin={true} // or false, depending on the user’s role
+                        />
                     ))
                 ) : (
                     <p>No bookings available.</p>
@@ -158,22 +209,22 @@ const styles = {
     container: {
         display: "flex",
         justifyContent: "space-between",
-        backgroundColor: "rgba(0, 0, 128, 0.43)",
+        backgroundColor: "#f0f8ff", // Light background for better contrast
         padding: "10px",
         width: "100%",
         height: "100vh",
-        marginTop: "70px", 
-        marginBottom: "50px", 
-        boxSizing: "border-box", 
-        boxShadow: "0 4px 12px grey",
+        marginTop: "70px",
+        marginBottom: "50px",
+        boxSizing: "border-box",
+        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)", // Softer shadow
     },
     profileCard: {
-        backgroundColor: "rgba(0, 0, 128, 0.43)",
+        backgroundColor: "#ffffff", // White background for profile card
         width: "40%",
         padding: "30px",
         borderRadius: "15px",
         textAlign: "center",
-        boxShadow: "0 4px 12px grey",
+        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)", // Softer shadow
         overflow: "auto",
     },
     avatarContainer: {
@@ -186,10 +237,11 @@ const styles = {
         height: "120px",
         borderRadius: "50%",
         objectFit: "cover",
+        border: "3px solid #000080", // Border around the avatar
     },
     heading: {
-        fontSize: "24px",
-        color: "#333",
+        fontSize: "28px", // Increased font size for the heading
+        color: "#000080", // Dark blue for heading
         marginBottom: "20px",
         fontWeight: "bold",
     },
@@ -197,7 +249,7 @@ const styles = {
         marginBottom: "30px",
     },
     infoItem: {
-        fontSize: "16px",
+        fontSize: "18px", // Slightly larger font for info items
         color: "#555",
         marginBottom: "10px",
     },
@@ -205,17 +257,14 @@ const styles = {
         marginTop: "10px",
         padding: "5px",
     },
-    buttonContainer: {
-        display: "flex",
-        justifyContent: "space-between",
-    },
-    editButton: {
-        backgroundColor: "#4CAF50",
+    uploadButton: {
+        backgroundColor: "#4CAF50", // Green for upload button
         color: "white",
         padding: "10px 20px",
         borderRadius: "5px",
         border: "none",
         cursor: "pointer",
+        marginTop: "10px",
     },
     logOffButton: {
         backgroundColor: "#f44336",
@@ -224,17 +273,18 @@ const styles = {
         borderRadius: "5px",
         border: "none",
         cursor: "pointer",
+        marginTop: "20px", // Added margin for separation
     },
     detailsSection: {
-        backgroundColor: "rgba(0, 0, 128, 0.43)",
+        backgroundColor: "#ffffff", // White background for details section
         width: "50%",
         padding: "20px",
         borderRadius: "15px",
-        boxShadow: "0 4px 12px grey",
+        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)", // Softer shadow
         overflowY: "auto",
     },
     createButton: {
-        backgroundColor: "#000080",
+        backgroundColor: "#000080", // Dark blue for create button
         color: "white",
         padding: "10px 20px",
         borderRadius: "5px",
@@ -242,6 +292,10 @@ const styles = {
         cursor: "pointer",
         display: "block",
         marginBottom: "20px",
+        transition: "background-color 0.3s", // Smooth transition for hover
+    },
+    createButtonHover: {
+        backgroundColor: "#003366", // Darker shade on hover
     },
 };
 

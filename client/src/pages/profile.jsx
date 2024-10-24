@@ -50,9 +50,6 @@ function UserProfile() {
     return () => unsubscribe();
   }, []);
   
-
-  
-
   const handleLogOff = async () => {
     try {
       await signOut(auth);
@@ -120,7 +117,6 @@ function UserProfile() {
   return (
     <div style={styles.container}>
       <div style={styles.profileCard}>
-        {/* Existing profile card content */}
         <h1>User Profile</h1>
         <div style={styles.infoContainer}>
           {isEditing ? (
@@ -173,14 +169,16 @@ function UserProfile() {
       <div style={styles.detailsSection}>
         <h2>Your Favourites</h2>
         {favourites.length > 0 ? (
-          favourites.map((favourite) => (
-            <div key={favourite.id} style={styles.favouriteItem}>
-              <h4>{favourite.title}</h4>
-              <p>{favourite.description}</p>
-              <img src={favourite.imageUrl} alt="Accommodation" style={styles.image} />
-              <button onClick={() => handleRemoveFavourite(favourite)}>Remove</button>
-            </div>
-          ))
+          <div style={styles.favouritesGrid}>
+            {favourites.map((favourite) => (
+              <div key={favourite.id} style={styles.favouriteCard}>
+                <h4 style={styles.favouriteTitle}>{favourite.title}</h4>
+                <p style={styles.favouriteDescription}>{favourite.description}</p>
+                <img src={favourite.imageUrl} alt="Accommodation" style={styles.favouriteImage} />
+                <button onClick={() => handleRemoveFavourite(favourite)} style={styles.removeButton}>Remove</button>
+              </div>
+            ))}
+          </div>
         ) : (
           <p>No favourites added.</p>
         )}
@@ -202,65 +200,43 @@ const styles = {
   container: {
     display: "flex",
     justifyContent: "space-between",
-    backgroundColor: "rgba(0, 0, 128, 0.43)",
+    backgroundColor: "#f0f8ff",
     padding: "10px",
     width: "100%",
-<<<<<<< HEAD
-    maxWidth: "1200px",
-    margin: "auto",
-    marginTop: "-13px",
-=======
     height: "100vh",
-    marginTop: "70px", 
-    marginBottom: "50px", 
-    boxSizing: "border-box", 
->>>>>>> bc8916955c98ada5ae6e1ff1bb7cc95f399f5947
-    boxShadow: "0 4px 12px grey",
+    marginTop: "70px",
+    marginBottom: "50px",
+    boxSizing: "border-box",
+    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
   },
   profileCard: {
-    backgroundColor: "rgba(0, 0, 128, 0.43)",
-    width: "40%",
+    backgroundColor: "#ffffff",
+    width: "30%",
     padding: "30px",
     borderRadius: "15px",
     textAlign: "center",
-    boxShadow: "0 4px 12px grey",
+    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
     overflow: "auto",
-  },
-  detailsSection: {
-    backgroundColor: "#fff",
-    width: "50%",
-    padding: "20px",
-    borderRadius: "15px",
-    boxShadow: "0 4px 12px grey",
-    overflowY: "auto",
-  },
-  favouriteItem: {
-    marginBottom: "20px",
-  },
-  image: {
-    width: "100px",
-    height: "100px",
-    objectFit: "cover",
-  },
-  successCard: {
-    backgroundColor: "#e0ffe0",
-    padding: "15px",
-    borderRadius: "10px",
-    marginTop: "20px",
-    textAlign: "center",
-    boxShadow: "0 4px 12px grey",
   },
   infoContainer: {
     marginBottom: "30px",
   },
   infoItem: {
-    fontSize: "16px",
+    fontSize: "18px",
     color: "#555",
     marginBottom: "10px",
+  },
+  input: {
+    padding: "10px",
+    borderRadius: "5px",
+    border: "1px solid #ccc",
+    marginTop: "5px",
+    width: "100%",
   },
   buttonContainer: {
     display: "flex",
     justifyContent: "space-between",
+    marginTop: "15px",
   },
   editButton: {
     backgroundColor: "#4CAF50",
@@ -296,12 +272,56 @@ const styles = {
     cursor: "pointer",
     fontSize: "16px",
   },
-  input: {
+  detailsSection: {
+    backgroundColor: "#ffffff",
+    width: "68%",
+    padding: "10px",
+    borderRadius: "15px",
+    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
+    overflowY: "auto",
+  },
+  favouritesGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(2, 1fr)", // Two cards per row
+    gap: "10px",
+  },
+  favouriteCard: {
+    backgroundColor: "#e6f7ff",
+    padding: "15px",
+    borderRadius: "10px",
+    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+    transition: "transform 0.2s",
+    width:"40%"
+  },
+  favouriteTitle: {
+    fontSize: "20px",
+    color: "#333",
+  },
+  favouriteDescription: {
+    fontSize: "16px",
+    color: "#666",
+  },
+  favouriteImage: {
+    width: "100%",
+    height: "auto",
+    borderRadius: "8px",
+  },
+  removeButton: {
+    backgroundColor: "#f44336",
+    color: "white",
     padding: "10px",
     borderRadius: "5px",
-    border: "1px solid #ccc",
-    marginTop: "5px",
-    width: "100%",
+    border: "none",
+    cursor: "pointer",
+    marginTop: "10px",
+  },
+  successCard: {
+    backgroundColor: "#dff0d8",
+    border: "1px solid #d6e9c6",
+    color: "#3c763d",
+    padding: "15px",
+    borderRadius: "5px",
+    marginTop: "20px",
   },
 };
 
