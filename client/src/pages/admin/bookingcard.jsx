@@ -1,14 +1,14 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-// import { addFavourite } from "../../features/favouritesSlice"; // Assuming you have a favourites slice
-import { initiateStripePayment } from "../../utils/stripePayment"; // Stripe payment helper function
+import { addFavourite } from "../../features/favouritesSlice"; // Import favouritesSlice action
+import { initiateStripePayment } from "../../utils/stripePayment";
 
 const BookingCard = ({ booking, onEdit, onDelete, isAdmin }) => {
   const dispatch = useDispatch();
 
   const handleBookNow = async () => {
     try {
-      await initiateStripePayment(booking.price); // Trigger payment with Stripe
+      await initiateStripePayment(booking.price); 
     } catch (error) {
       console.error("Payment failed:", error);
     }
@@ -17,6 +17,7 @@ const BookingCard = ({ booking, onEdit, onDelete, isAdmin }) => {
   const handleSaveAsFavourite = () => {
     dispatch(addFavourite(booking)); // Dispatch action to save booking as favourite
   };
+
 
   return (
     <div style={styles.card}>

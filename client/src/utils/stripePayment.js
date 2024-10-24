@@ -3,12 +3,12 @@ import { loadStripe } from "@stripe/stripe-js";
 
 const stripePromise = loadStripe("pk_test_51QB9mNFVlr9lrfFny3IGaUqxWFZalmgeV9GNYq4WNuMlugGENoOBp06IMRsHwnIaAr9BxBxHai40mM4Kuie0p96i00EcHan4cV"); // Replace with your public Stripe key
 
-export const initiateStripePayment = async (amount) => {
+export const initiateStripePayment = async (amount, accommodationInfo) => {
   const stripe = await stripePromise;
   const { error } = await stripe.redirectToCheckout({
     lineItems: [{ price: "price_1QCM2KFVlr9lrfFn5li0OOIy", quantity: 1 }], // Set the price ID
     mode: "payment",
-    successUrl: window.location.origin + "/success",
+    successUrl: `${window.location.origin}/user-profile?paymentSuccess=true&accommodation=${JSON.stringify(accommodationInfo)}`,
     cancelUrl: window.location.origin + "/cancel",
   });
   if (error) {
