@@ -27,12 +27,13 @@ function Home() {
     cursor: "pointer",
     fontSize: "16px",
     fontWeight: "bold",
-    marginTop: "30px",
+    marginTop: "80px",
     transition: "background-color 0.3s", // Smooth background transition
   };
 
   const buttonHoverStyle = {
-    backgroundColor: "#45a049", // Darker green on hover
+    backgroundColor: "black", 
+    color: "yellow" ,// Darker green on hover
   };
 
   const slides = [
@@ -71,39 +72,54 @@ function Home() {
   }, []);
 
   return (
-    <div style={{ 
-      fontFamily: "Arial, sans-serif", 
-      backgroundColor: "#f5f5f5", 
-      padding: "20px",
-      display: 'flex',
-      justifyContent: 'center',
-      minHeight: '100vh', // Ensure the container takes full viewport height
-    }}>
-      <div style={{ 
-        display: 'flex', 
-        flexDirection: 'column', 
-        maxWidth: '1200px', // Set a maximum width for the content
-        width: '100%', // Allow it to be responsive
-      }}>
+    <div
+      style={{width:"100%",
+        fontFamily: "Arial, sans-serif",
+        backgroundColor: "lightblue",
+        padding: "20px",
+        display: "flex",
+        justifyContent: "center",
+        minHeight: "100vh",
+        paddingTop: "80px", // Add padding to compensate for the fixed navbar height
+        paddingBottom: "120px", // Add padding to compensate for the footer height
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          maxWidth: "", // Set a maximum width for the content
+          width: "100%", // Allow it to be responsive
+        }}
+      >
         <div style={{ position: "relative" }}>
           <div
             style={{
               width: "100%",
-              height: "350px",
+              height: "430px",
               backgroundImage: `url(${require("../res/H1.jpg")})`,
               backgroundRepeat: "no-repeat",
               backgroundSize: "cover",
               textAlign: "center",
-              marginTop: "-25px",
+              marginTop: "-75px",
               borderRadius: "10px",
               boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)", // Add shadow for depth
             }}
           >
+            <div style={{justifyContent:"flex-start",textAlign:"start",color:"gold",alignItems:"center",marginTop:"",height:"70%",width:"400px",backgroundColor:"transparent",marginLeft:"120px",paddingTop:"70px"}}>
+            <h2>         Welocme to philas Hotel App <br />
+              where you can see can book for <br />
+              weddings,parties meetings</h2>
+            </div>
             {!showOptions ? (
               <button
                 style={buttonStyle}
-                onMouseOver={(e) => (e.currentTarget.style.backgroundColor = buttonHoverStyle.backgroundColor)}
-                onMouseOut={(e) => (e.currentTarget.style.backgroundColor = buttonStyle.backgroundColor)}
+                onMouseOver={(e) =>
+                  (e.currentTarget.style.backgroundColor = buttonHoverStyle.backgroundColor)
+                }
+                onMouseOut={(e) =>
+                  (e.currentTarget.style.backgroundColor = buttonStyle.backgroundColor)
+                }
                 onClick={handleGetStarted}
               >
                 Get Started
@@ -112,16 +128,24 @@ function Home() {
               <>
                 <button
                   style={buttonStyle}
-                  onMouseOver={(e) => (e.currentTarget.style.backgroundColor = buttonHoverStyle.backgroundColor)}
-                  onMouseOut={(e) => (e.currentTarget.style.backgroundColor = buttonStyle.backgroundColor)}
+                  onMouseOver={(e) =>
+                    (e.currentTarget.style.backgroundColor = buttonHoverStyle.backgroundColor)
+                  }
+                  onMouseOut={(e) =>
+                    (e.currentTarget.style.backgroundColor = buttonStyle.backgroundColor)
+                  }
                   onClick={handleUserLogin}
                 >
                   Login as User
                 </button>
                 <button
                   style={buttonStyle}
-                  onMouseOver={(e) => (e.currentTarget.style.backgroundColor = buttonHoverStyle.backgroundColor)}
-                  onMouseOut={(e) => (e.currentTarget.style.backgroundColor = buttonStyle.backgroundColor)}
+                  onMouseOver={(e) =>
+                    (e.currentTarget.style.backgroundColor = buttonHoverStyle.backgroundColor)
+                  }
+                  onMouseOut={(e) =>
+                    (e.currentTarget.style.backgroundColor = buttonStyle.backgroundColor)
+                  }
                   onClick={handleAdminLogin}
                 >
                   Login as Admin
@@ -130,17 +154,27 @@ function Home() {
             )}
           </div>
 
-          <h1 style={{ textAlign: "center", margin: "20px 0", color: "#333" }}>Welcome to Our Gallery</h1>
+          <h1 style={{ textAlign: "center", margin: "20px 0", color: "#333" }}>
+            Welcome to Our Gallery
+          </h1>
         </div>
 
-        <div style={{ display: "flex", justifyContent: "center", marginTop: "20px", flexGrow: 1 }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginTop: "20px",
+            flexGrow: 1,
+            width:"100%"
+          }}
+        >
           <div
             style={{
               backgroundColor: "#e63946",
-              width: "550px",
+              width: "45%",
+              // marginLeft:"-70px",
               height: "350px",
               borderRadius: "20px",
-              marginLeft: "70px",
               padding: "20px",
               color: "white",
               display: "flex",
@@ -151,8 +185,10 @@ function Home() {
           >
             <h2 style={{ marginBottom: "10px", fontSize: "1.5em" }}>About Our Hotels</h2>
             <p>
-              Experience the finest hospitality at our hotels, where comfort meets luxury. Whether you're traveling for
-              business or leisure, our rooms are designed to provide you with the perfect retreat. Enjoy top-notch amenities and personalized service that makes every stay memorable. Book your next getaway with us today!
+              Experience the finest hospitality at our hotels, where comfort meets luxury.
+              Whether you're traveling for business or leisure, our rooms are designed to
+              provide you with the perfect retreat. Enjoy top-notch amenities and personalized
+              service that makes every stay memorable. Book your next getaway with us today!
             </p>
             <iframe
               title="Google Map"
@@ -168,12 +204,13 @@ function Home() {
           <div
             style={{
               backgroundColor: "#f1faee",
-              width: "600px",
+              width: "45%",
               height: "350px",
               borderRadius: "20px",
               position: "relative",
               overflow: "hidden",
               boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)", // Shadow for depth
+              marginLeft:"100px"
             }}
           >
             <h2 style={{ textAlign: "center", color: "#333", margin: "20px 0" }}>Gallery</h2>

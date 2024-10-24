@@ -11,6 +11,7 @@ body {
   .hero-section {
     position: relative;
     width: 100%;
+    background-color: rgba(0, 0, 128, 0.43);
     height: 400px;
     background-image: url('../res/H1.jpg'); /* Ensure the image path is correct */
     background-size: cover;

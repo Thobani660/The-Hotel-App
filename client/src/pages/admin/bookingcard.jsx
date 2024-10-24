@@ -1,92 +1,120 @@
-import React from 'react';
+import React from "react";
+import { useDispatch } from "react-redux";
+import { addFavourite } from "../../features/favouritesSlice"; // Import favouritesSlice action
+import { initiateStripePayment } from "../../utils/stripePayment";
 
-function BookingCard({ booking, onEdit, onDelete }) {
-    const [accommodations, setAccommodations] = useState([]); // Initialize as an empty array
-    useEffect(() => {
-        const fetchAccommodations = async () => {
-            try {
-                const response = await fetch('/api/accommodations'); // Your API endpoint
-                const data = await response.json();
-                setAccommodations(data); // Ensure this is an array
-            } catch (error) {
-                console.error('Error fetching accommodations:', error);
-            }
-        };
-    
-        fetchAccommodations();
-    }, []);
+const BookingCard = ({ booking, onEdit, onDelete, isAdmin }) => {
+  const dispatch = useDispatch();
 
-    return (
-        <div>
-            {accommodations && accommodations.length > 0 ? (
-                accommodations.map((booking) => (
-                    <BookingCard 
-                        key={booking.id} 
-                        booking={booking} 
-                        onEdit={() => handleEdit(booking.id)} 
-                        onDelete={() => handleDelete(booking.id)} 
-                    />
-                ))
-            ) : (
-                <p>No accommodations available.</p> // Fallback UI
-            )}
-        </div>
-    );
-}
+  const handleBookNow = async () => {
+    try {
+      await initiateStripePayment(booking.price); 
+    } catch (error) {
+      console.error("Payment failed:", error);
+    }
+  };
 
-// Styles for the card
-const styles = {
-    card: {
-        background: '#f9f9f9',  // Light background for contrast
-        padding: '20px',
-        borderRadius: '10px',
-        boxShadow: '0 4px 10px rgba(0,0,0,0.15)', // Soft shadow
-        margin: '20px', // Spacing around cards
-        transition: 'transform 0.2s', // Animation on hover
-    },
-    title: {
-        fontSize: '1.5rem',
-        fontWeight: '600',
-        color: '#333',
-        marginBottom: '10px',
-    },
-    subheader: {
-        fontSize: '1.2rem',
-        fontWeight: '400',
-        color: '#555',
-        marginBottom: '10px',
-    },
-    description: {
-        fontSize: '1rem',
-        color: '#666',
-        marginBottom: '15px',
-    },
-    image: {
-        maxWidth: '100%',
-        height: 'auto',
-        borderRadius: '8px',
-        marginBottom: '15px', // Spacing below the image
-        boxShadow: '0 2px 5px rgba(0,0,0,0.1)', // Soft shadow around image
-    },
-    buttonContainer: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        marginTop: '10px',
-    },
-    button: {
-        padding: '10px 15px',
-        borderRadius: '5px',
-        border: 'none',
-        backgroundColor: '#4CAF50',
-        color: '#fff',
-        cursor: 'pointer',
-        transition: 'background-color 0.3s, transform 0.2s', // Smooth hover effect
-    },
+  const handleSaveAsFavourite = () => {
+    dispatch(addFavourite(booking)); // Dispatch action to save booking as favourite
+  };
+
+
+  return (
+    <div style={styles.card}>
+      <h2 style={styles.title}>{booking.title}</h2>
+      <h4 style={styles.subheader}>{booking.subheader}</h4>
+      <p style={styles.description}>{booking.description}</p>
+      {booking.imageUrl && (
+        <img src={booking.imageUrl} alt="Accommodation" style={styles.image} />
+      )}
+      <p style={styles.price}>Price: ${booking.price}</p>
+
+      <div style={styles.buttonContainer}>
+        <button style={styles.bookButton} onClick={handleBookNow}>
+          Book Now
+        </button>
+        <button style={styles.saveButton} onClick={handleSaveAsFavourite}>
+          Save as Favourite
+        </button>
+        {isAdmin && (
+          <>
+            <button style={styles.editButton} onClick={onEdit}>
+              Edit
+            </button>
+            <button style={styles.deleteButton} onClick={onDelete}>
+              Delete
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  );
 };
 
-// Add hover effect to the card
-styles.card[':hover'] = {
-    transform: 'scale(1.05)', // Slightly enlarge on hover
+// Styles
+const styles = {
+  card: {
+    // existing styles
+  },
+  title: {
+    // existing styles
+  },
+  subheader: {
+    // existing styles
+  },
+  description: {
+    // existing styles
+  },
+  image: {
+    width: "100%",
+    height: "200px",
+    objectFit: "cover",
+  },
+  price: {
+    fontSize: "18px",
+    fontWeight: "bold",
+    marginTop: "10px",
+  },
+  buttonContainer: {
+    display: "flex",
+    justifyContent: "center",
+    marginTop: "15px",
+  },
+  bookButton: {
+    backgroundColor: "#007BFF",
+    color: "white",
+    padding: "10px 20px",
+    borderRadius: "5px",
+    marginRight: "10px",
+    cursor: "pointer",
+    border: "none",
+  },
+  saveButton: {
+    backgroundColor: "#FFA500",
+    color: "white",
+    padding: "10px 20px",
+    borderRadius: "5px",
+    marginRight: "10px",
+    cursor: "pointer",
+    border: "none",
+  },
+  editButton: {
+    backgroundColor: "#4CAF50",
+    color: "white",
+    padding: "10px 20px",
+    borderRadius: "5px",
+    marginRight: "10px",
+    cursor: "pointer",
+    border: "none",
+  },
+  deleteButton: {
+    backgroundColor: "#f44336",
+    color: "white",
+    padding: "10px 20px",
+    borderRadius: "5px",
+    cursor: "pointer",
+    border: "none",
+  },
 };
 
 export default BookingCard;
