@@ -5,10 +5,10 @@ and functionality, using Firebase for authentication and data storage, and Redux
 state management.</h4>
 <h2>Run This App:</h2>
 <p>
-  clone :
-  cd client:
-  npm install:
-  git checkout Dev:
-  npm run dev
+  clone : https://github.com/Thobani660/The-Hotel-App <br></br>
+  cd client: "Takes you to client Side" <br></br>
+  npm install: "installing all dependencies" <br></br>
+  git checkout Dev: "branch I am working on" <br></br>
+  npm run dev : "get started"
 </p>
 
