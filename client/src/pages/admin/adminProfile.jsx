@@ -79,17 +79,23 @@ function AdminProfile() {
 
     const handleSubmit = async (formData) => {
         try {
+            // Add the admin UID to the booking data
+            const bookingData = {
+                ...formData,
+                adminId: admin.uid, // Add this line to associate the booking with the admin
+            };
+    
             if (editMode && formData.id) {
-                await updateDoc(doc(db, "bookings", formData.id), formData);
-                dispatch(updateBooking(formData));
+                await updateDoc(doc(db, "bookings", formData.id), bookingData);
+                dispatch(updateBooking(bookingData));
                 alert("Booking updated successfully!");
             } else {
-                const docRef = await addDoc(collection(db, "bookings"), formData);
-                const newBooking = { ...formData, id: docRef.id };
+                const docRef = await addDoc(collection(db, "bookings"), bookingData);
+                const newBooking = { ...bookingData, id: docRef.id };
                 dispatch(addBooking(newBooking));
                 alert("Booking added successfully!");
             }
-
+    
             setIsFormVisible(false);
             setEditMode(false);
         } catch (error) {
