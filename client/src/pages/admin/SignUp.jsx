@@ -1,24 +1,41 @@
 import React, { useState } from "react";
 import { auth } from "../../firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { useDispatch } from "react-redux";
+import { signupStart, signupSuccess, signupFailure } from "../../features/authSlice"; // Import actions
 import { useNavigate } from "react-router-dom";
 
 function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [name, setName] = useState(""); // New field for admin name
+  const [profilePic, setProfilePic] = useState(null); // New field for profile picture
   const [error, setError] = useState(null);
   const [modalVisible, setModalVisible] = useState(true); // Visible by default for demo purposes
   const navigate = useNavigate();
+  const dispatch = useDispatch(); // Use dispatch for Redux actions
 
   const handleSignUp = async (e) => {
     e.preventDefault();
+    dispatch(signupStart()); // Start the signup process
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      alert("Welcome you have successfully Signed Up,please Sign In")
-      navigate("/adminsignin"); // Redirect to the homepage
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Here, you can save additional user information (like name and profile picture) to Firestore
+      // await saveAdminInfo(user.uid, { name, profilePic });
+
+      dispatch(signupSuccess({ uid: user.uid, email, name, profilePic })); // Dispatch success action
+      alert("Welcome, you have successfully signed up. Please sign in.");
+      navigate("/adminsignin"); // Redirect to the admin sign-in page
     } catch (err) {
       setError(err.message);
+      dispatch(signupFailure(err.message)); // Dispatch failure action
     }
+  };
+
+  const handleProfilePicChange = (e) => {
+    setProfilePic(e.target.files[0]);
   };
 
   const modalStyles = {
@@ -120,6 +137,16 @@ function SignUp() {
           <p style={{ marginBottom: "30px", color: "#666" }}>Create your account</p>
 
           <input
+            type="text"
+            placeholder="Enter Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            style={inputStyles}
+            onFocus={(e) => (e.target.style.borderColor = inputFocusStyles.borderColor)}
+          />
+
+          <input
             type="email"
             placeholder="Enter Email"
             value={email}
@@ -140,11 +167,10 @@ function SignUp() {
           />
 
           <input
-            type="password"
-            placeholder="Repeat Password"
+            type="file"
+            onChange={handleProfilePicChange}
             required
             style={inputStyles}
-            onFocus={(e) => (e.target.style.borderColor = inputFocusStyles.borderColor)}
           />
 
           <label style={{ display: "block", margin: "15px 0" }}>

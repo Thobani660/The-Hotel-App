@@ -8,21 +8,28 @@ function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-
   const handleLogin = async (e) => {
     e.preventDefault();
-
+  
     try {
+      console.log("Attempting to log in with", { email, password }); // Log input
       await signInWithEmailAndPassword(auth, email, password);
-      alert("Login successful!"); // Alert on successful login
-      navigate("/adminProfile"); 
-      // Redirect to admin dashboard or homepage
+      alert("Login successful!"); 
+      navigate("/adminProfile");
     } catch (error) {
       console.error("Error logging in admin: ", error);
-      alert("Error logging in: " + error.message); // Alert on error
-      setError(error.message); // Set error state for any additional UI display
+      // Detailed error feedback
+      if (error.code === 'auth/user-not-found') {
+        alert("No user found with this email.");
+      } else if (error.code === 'auth/wrong-password') {
+        alert("Incorrect password.");
+      } else {
+        alert("Error logging in: " + error.message);
+      }
+      setError(error.message);
     }
   };
+  
 
   return (
     <div style={styles.container}>
@@ -100,9 +107,6 @@ const styles = {
     borderRadius: "4px",
     fontSize: '16px',
     transition: "background-color 0.3s",
-  },
-  buttonHover: {
-    backgroundColor: "#45a049",
   },
   signupText: {
     margin: "8px 0",

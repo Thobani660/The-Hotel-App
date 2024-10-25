@@ -1,4 +1,3 @@
-// src/features/authSlice.js
 import { createSlice } from '@reduxjs/toolkit';
 
 const authSlice = createSlice({
@@ -8,36 +7,37 @@ const authSlice = createSlice({
     error: null,
     loading: false,
   },
-  // ... other reducers
-
   reducers: {
     loginStart: (state) => {
       state.loading = true;
       state.error = null;
     },
     loginSuccess: (state, action) => {
-      state.user = action.payload;
+      state.user = action.payload; // Store user info in the state
       state.loading = false;
     },
     loginFailure: (state, action) => {
       state.loading = false;
-      state.error = action.payload;
+      state.error = action.payload; // Capture error messages
     },
     signupStart: (state) => {
       state.loading = true;
       state.error = null;
     },
     signupSuccess: (state, action) => {
-      state.user = action.payload;
+      state.user = action.payload; // Store new user info
       state.loading = false;
     },
     signupFailure: (state, action) => {
       state.loading = false;
-      state.error = action.payload;
+      state.error = action.payload; // Capture signup errors
     },
     logout: (state) => {
-      state.user = null;
+      state.user = null; // Clear user on logout
       state.error = null;
+    },
+    updateUser: (state, action) => {
+      state.user = { ...state.user, ...action.payload }; // Update user info in state
     },
   },
 });
@@ -51,6 +51,7 @@ export const {
   signupSuccess,
   signupFailure,
   logout,
+  updateUser, // Action to update user information
 } = authSlice.actions;
 
 // Export the reducer

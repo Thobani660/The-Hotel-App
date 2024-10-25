@@ -1,47 +1,40 @@
 // src/App.js
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./pages/homepage";
 import SignIn from "./pages/signin";
 import SignUp from "./pages/signup";
 import Booking from "./pages/admin/bookings";
 import NoPage from "./pages/noPage";
 import NavBar from "./components/nav";
-// import Payment from "./pages/payment";
 import History from "./pages/history";
 import Profile from "./pages/profile";
 import AdmitSignIn from "./pages/admin/signin";
-import AdmitSignUp from "./pages/admin/signup";
+import AdmitSignUp from "./pages/admin/SignUp"
 import AdminProfile from "./pages/admin/adminProfile";
 import Accommodation from "./pages/accomodation";
 import PaymentSuccess from "./components/PaymentSuccess";
 import PaymentCancel from "./components/PaymentCancel";
 
-// import Profile from "./pages/profile";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-
 function App() {
   return (
     <Router>
       <div style={styles.appContainer}>
-        <NavBar /> {/* Navbar at the top */}
+        <NavBar />
         <div style={styles.contentContainer}>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/signin" element={<SignIn />} /> {/*user*/}
-            <Route path="/signup" element={<SignUp />} /> {/*user*/}
-            <Route path="/adminsignin" element={<AdmitSignIn />} />{" "}
-            {/* Admin SignIn */}
-            <Route path="/adminsignup" element={<AdmitSignUp />} />{" "}
-            {/* Admin SignUp */}
+            <Route path="/signin" element={<SignIn />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/adminsignin" element={<AdmitSignIn />} />
+            <Route path="/adminsignup" element={<AdmitSignUp />} />
             <Route path="/accomodation" element={<Accommodation />} />
-            {/* <Route path="/payment" element={<Payment />} /> */}
             <Route path="/history" element={<History />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/adminProfile" element={<AdminProfile />} />
-            {/* <Route path="/profile" element={<Profile />} /> */}
-            <Route path="*" element={<NoPage />} />{" "}
-            <Route path="/PaymentSuccess" component={PaymentSuccess} />
-            <Route path="/PaymentCancel" component={PaymentCancel} />
-            {/* Catch-all route for unmatched paths */}
+            <Route path="/payment-success" element={<PaymentSuccess />} />
+            <Route path="/payment-cancel" element={<PaymentCancel />} />
+            <Route path="*" element={<NoPage />} /> {/* Catch-all route */}
           </Routes>
         </div>
       </div>
@@ -57,7 +50,7 @@ const styles = {
     height: "100vh",
   },
   contentContainer: {
-    marginTop: "70px", // Adjust based on NavBar height
+    marginTop: "70px",
     flex: 1,
     display: "flex",
     justifyContent: "center",

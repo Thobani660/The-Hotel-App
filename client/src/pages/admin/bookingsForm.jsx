@@ -1,3 +1,4 @@
+// src/components/BookingForm.js
 import React, { useState, useEffect } from "react";
 
 const BookingForm = ({ onSubmit, initialData = {} }) => {
@@ -20,6 +21,17 @@ const BookingForm = ({ onSubmit, initialData = {} }) => {
             ...formData,
             [e.target.name]: e.target.value
         });
+    };
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setFormData({ ...formData, imageUrl: reader.result });
+            };
+            reader.readAsDataURL(file); // Convert file to base64
+        }
     };
 
     const handleSubmit = (e) => {
@@ -73,13 +85,12 @@ const BookingForm = ({ onSubmit, initialData = {} }) => {
                 min="0"
             />
             <input
-                type="url"
+                type="file"
                 name="imageUrl"
-                value={formData.imageUrl}
-                onChange={handleChange}
-                placeholder="Image URL"
+                onChange={handleFileChange}
+                accept="image/*"
                 required
-                style={styles.input}
+                style={styles.fileInput}
             />
             <button type="submit" style={styles.submitButton}>Submit</button>
         </form>
@@ -94,29 +105,40 @@ const styles = {
         gap: '15px',
         maxWidth: '400px',
         margin: 'auto',
+        padding: '20px',
+        borderRadius: '10px',
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+        backgroundColor: '#ffffff',
     },
     input: {
-        padding: '10px',
+        padding: '12px',
+        fontSize: '16px',
+        borderRadius: '5px',
+        border: '1px solid #ccc',
+    },
+    fileInput: {
+        padding: '12px',
         fontSize: '16px',
         borderRadius: '5px',
         border: '1px solid #ccc',
     },
     textarea: {
-        padding: '10px',
+        padding: '12px',
         fontSize: '16px',
         borderRadius: '5px',
         border: '1px solid #ccc',
         height: '100px',
     },
     submitButton: {
-        padding: '10px 20px',
+        padding: '12px 20px',
         fontSize: '16px',
         backgroundColor: '#4CAF50',
         color: 'white',
         borderRadius: '5px',
         border: 'none',
         cursor: 'pointer',
-    }
+        transition: 'background-color 0.3s, transform 0.2s',
+    },
 };
 
 export default BookingForm;

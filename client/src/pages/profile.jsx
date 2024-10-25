@@ -5,6 +5,7 @@ import { auth } from "../firebase";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../features/authSlice";
 import { removeFavourite, addFavourite } from "../features/favouritesSlice";
+import { setBookings } from "../features/bookingsSlice";
 
 function UserProfile() {
   const [user, setUser] = useState(null);
@@ -15,10 +16,10 @@ function UserProfile() {
     displayName: "",
     email: ""
   });
-  
+
   const favourites = useSelector((state) => state.favourites); // Get favourites from Redux store
+  const bookings = useSelector((state) => state.bookings.bookings); // Get bookings from Redux store
   const dispatch = useDispatch();
-  const [successfulPayment, setSuccessfulPayment] = useState(null); // New state for payment success
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -36,20 +37,18 @@ function UserProfile() {
         setError("No user is logged in");
       }
       setLoading(false);
-  
-      // Check for payment success URL parameters
-      const urlParams = new URLSearchParams(window.location.search);
-      const paymentSuccess = urlParams.get('paymentSuccess');
-      const accommodation = urlParams.get('accommodation');
-  
-      if (paymentSuccess === 'true' && accommodation) {
-        handlePaymentSuccess(JSON.parse(accommodation)); // Call the success function with accommodation info
-      }
     });
-  
+
+    // Fetch and set bookings (mock data here, replace with actual booking fetch logic)
+    const mockBookings = [
+      { id: 1, title: "Deluxe Room", status: "Success", description: "Luxury suite in downtown", imageUrl: "example1.jpg" },
+      { id: 2, title: "Standard Room", status: "Canceled", description: "Cozy standard room", imageUrl: "example2.jpg" },
+    ];
+    dispatch(setBookings(mockBookings));
+
     return () => unsubscribe();
-  }, []);
-  
+  }, [dispatch]);
+
   const handleLogOff = async () => {
     try {
       await signOut(auth);
@@ -99,15 +98,6 @@ function UserProfile() {
 
   const handleRemoveFavourite = (favourite) => {
     dispatch(removeFavourite(favourite));
-  };
-
-  const handleAddFavourite = (accommodation) => {
-    dispatch(addFavourite(accommodation));
-  };
-
-  // Simulated function to mark payment as successful
-  const handlePaymentSuccess = (accommodationInfo) => {
-    setSuccessfulPayment(accommodationInfo);
   };
 
   if (loading) {
@@ -187,13 +177,20 @@ function UserProfile() {
           <p>No favourites added.</p>
         )}
 
-        {/* Payment Success Notification */}
-        {successfulPayment && (
-          <div style={styles.successCard}>
-            <h3>Payment Successful!</h3>
-            <p>Your booking for <strong>{successfulPayment.title}</strong> has been completed successfully.</p>
-            <p>Thank you for your purchase!</p>
+        <h2>Booking History</h2>
+        {bookings.length > 0 ? (
+          <div style={styles.historyGrid}>
+            {bookings.map((booking) => (
+              <div key={booking.id} style={styles.historyCard}>
+                <h4 style={styles.historyTitle}>{booking.title}</h4>
+                <p>{booking.description}</p>
+                <img src={booking.imageUrl} alt="Booking" style={styles.historyImage} />
+                <p><strong>Status:</strong> {booking.status === "Success" ? "Payment Successful" : "Payment Canceled"}</p>
+              </div>
+            ))}
           </div>
+        ) : (
+          <p>No bookings found.</p>
         )}
       </div>
     </div>
@@ -222,112 +219,22 @@ const styles = {
     boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
     overflow: "auto",
   },
-  infoContainer: {
-    marginBottom: "30px",
+  historyGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+    gap: "10px",
   },
-  infoItem: {
-    fontSize: "18px",
-    color: "#555",
+  historyCard: {
+    border: "1px solid #e0e0e0",
+    borderRadius: "10px",
+    padding: "15px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+  },
+  historyImage: {
+    width: "100%",
+    borderRadius: "5px",
     marginBottom: "10px",
   },
-  input: {
-    padding: "10px",
-    borderRadius: "5px",
-    border: "1px solid #ccc",
-    marginTop: "5px",
-    width: "100%",
-  },
-  buttonContainer: {
-    display: "flex",
-    justifyContent: "space-between",
-    marginTop: "15px",
-  },
-  editButton: {
-    backgroundColor: "#4CAF50",
-    color: "white",
-    padding: "10px 20px",
-    borderRadius: "5px",
-    border: "none",
-    cursor: "pointer",
-  },
-  logOffButton: {
-    backgroundColor: "#f44336",
-    color: "white",
-    padding: "10px 20px",
-    borderRadius: "5px",
-    border: "none",
-    cursor: "pointer",
-  },
-  saveButton: {
-    backgroundColor: "#4CAF50",
-    color: "#fff",
-    border: "none",
-    borderRadius: "5px",
-    padding: "10px 20px",
-    cursor: "pointer",
-    fontSize: "16px",
-  },
-  cancelButton: {
-    backgroundColor: "#F44336",
-    color: "#fff",
-    border: "none",
-    borderRadius: "5px",
-    padding: "10px 20px",
-    cursor: "pointer",
-    fontSize: "16px",
-  },
-  detailsSection: {
-    backgroundColor: "#ffffff",
-    width: "68%",
-    padding: "10px",
-    borderRadius: "15px",
-    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
-    overflowY: "auto",
-  },
-  favouritesGrid: {
-    display: "flex",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-  },
-  favouriteCard: {
-    backgroundColor: "#f9f9f9",
-    border: "1px solid #ddd",
-    borderRadius: "10px",
-    padding: "10px",
-    width: "30%",
-    margin: "10px",
-    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-    textAlign: "center",
-  },
-  favouriteTitle: {
-    fontSize: "18px",
-    fontWeight: "bold",
-  },
-  favouriteDescription: {
-    fontSize: "14px",
-    color: "#666",
-  },
-  favouriteImage: {
-    width: "100%",
-    height: "auto",
-    borderRadius: "10px",
-  },
-  removeButton: {
-    backgroundColor: "#f44336",
-    color: "#fff",
-    border: "none",
-    borderRadius: "5px",
-    padding: "5px 10px",
-    cursor: "pointer",
-  },
-  successCard: {
-    backgroundColor: "#d4edda",
-    color: "#155724",
-    border: "1px solid #c3e6cb",
-    borderRadius: "5px",
-    padding: "10px",
-    marginTop: "20px",
-  }
 };
 
 export default UserProfile;

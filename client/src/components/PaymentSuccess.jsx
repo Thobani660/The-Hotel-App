@@ -19,7 +19,7 @@ const PaymentSuccess = () => {
           <pre style={styles.details}>{accommodation}</pre>
         </div>
       )}
-      <button style={styles.button} onClick={() => window.location.href = '/user-profile'}>
+      <button style={styles.button} onClick={() => window.location.href = '/profile'}>
         Go to Your Profile
       </button>
     </div>
