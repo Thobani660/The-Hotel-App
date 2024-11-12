@@ -27,38 +27,38 @@ function Home() {
     cursor: "pointer",
     fontSize: "16px",
     fontWeight: "bold",
-    marginTop: "80px",
+    marginTop: "-140px",
     transition: "background-color 0.3s", // Smooth background transition
   };
 
   const buttonHoverStyle = {
-    backgroundColor: "black", 
-    color: "yellow" ,// Darker green on hover
+    backgroundColor: "black",
+    color: "yellow", // Darker green on hover
   };
 
   const slides = [
     {
-      src: require("../res/premium_photo-1676321688607-2d18ba129dbd.avif"),
+      src: require("../res/istockphoto-1192833363-612x612-removebg-preview.png"),
       alt: "The Woods",
     },
     {
-      src: require("../res/photo-1657349226767-66c983d7df39.avif"),
+      src: require("../res/istockphoto-1192833363-612x612-removebg-preview.png"),
       alt: "Cinque Terre",
     },
     {
-      src: require("../res/photo-1663659512973-8df941db5e1a.avif"),
+      src: require("../res/R.png"),
       alt: "Mountains and fjords",
     },
     {
-      src: require("../res/premium_photo-1675745329378-5573c360f69f.avif"),
+      src: require("../res/R.png"),
       alt: "Northern Lights",
     },
     {
-      src: require("../res/photo-1594027554094-99c00129af63.avif"),
+      src: require("../res/R.png"),
       alt: "Nature and sunrise",
     },
     {
-      src: require("../res/premium_photo-1676321688607-2d18ba129dbd.avif"),
+      src: require("../res/istockphoto-1192833363-612x612-removebg-preview.png"),
       alt: "Snowy Mountains",
     },
   ];
@@ -73,13 +73,13 @@ function Home() {
 
   return (
     <div
-      style={{width:"100%",
+      style={{
+        width: "100%",
         fontFamily: "Arial, sans-serif",
-        backgroundColor: "lightblue",
         padding: "20px",
         display: "flex",
         justifyContent: "center",
-        minHeight: "100vh",
+        height: "90%",
         paddingTop: "80px", // Add padding to compensate for the fixed navbar height
         paddingBottom: "120px", // Add padding to compensate for the footer height
       }}
@@ -89,36 +89,54 @@ function Home() {
           display: "flex",
           flexDirection: "column",
           maxWidth: "", // Set a maximum width for the content
-          width: "100%", // Allow it to be responsive
+          // Allow it to be responsive
         }}
       >
         <div style={{ position: "relative" }}>
           <div
             style={{
               width: "100%",
-              height: "430px",
-              backgroundImage: `url(${require("../res/H1.jpg")})`,
+              height: "730px",
+              backgroundImage: `url(${require("../res/istockphoto-1192833363-612x612-removebg-preview.png")})`,
               backgroundRepeat: "no-repeat",
               backgroundSize: "cover",
               textAlign: "center",
-              marginTop: "-75px",
+              marginTop: "-165px",
               borderRadius: "10px",
               boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)", // Add shadow for depth
             }}
           >
-            <div style={{justifyContent:"flex-start",textAlign:"start",color:"gold",alignItems:"center",marginTop:"",height:"70%",width:"400px",backgroundColor:"transparent",marginLeft:"120px",paddingTop:"70px"}}>
-            <h2>         Welocme to philas Hotel App <br />
-              where you can see can book for <br />
-              weddings,parties meetings</h2>
+            <div
+              style={{
+                justifyContent: "flex-start",
+                textAlign: "start",
+                color: "gold",
+                alignItems: "center",
+                marginTop: "",
+                height: "100%",
+                width: "400px",
+                backgroundColor: "transparent",
+                marginLeft: "120px",
+                paddingTop: "70px",
+              }}
+            >
+              <h2>
+                {" "}
+                Welocme to philas Hotel App <br />
+                where you can see can book for <br />
+                weddings,parties meetings
+              </h2>
             </div>
             {!showOptions ? (
               <button
                 style={buttonStyle}
                 onMouseOver={(e) =>
-                  (e.currentTarget.style.backgroundColor = buttonHoverStyle.backgroundColor)
+                  (e.currentTarget.style.backgroundColor =
+                    buttonHoverStyle.backgroundColor)
                 }
                 onMouseOut={(e) =>
-                  (e.currentTarget.style.backgroundColor = buttonStyle.backgroundColor)
+                  (e.currentTarget.style.backgroundColor =
+                    buttonStyle.backgroundColor)
                 }
                 onClick={handleGetStarted}
               >
@@ -129,10 +147,12 @@ function Home() {
                 <button
                   style={buttonStyle}
                   onMouseOver={(e) =>
-                    (e.currentTarget.style.backgroundColor = buttonHoverStyle.backgroundColor)
+                    (e.currentTarget.style.backgroundColor =
+                      buttonHoverStyle.backgroundColor)
                   }
                   onMouseOut={(e) =>
-                    (e.currentTarget.style.backgroundColor = buttonStyle.backgroundColor)
+                    (e.currentTarget.style.backgroundColor =
+                      buttonStyle.backgroundColor)
                   }
                   onClick={handleUserLogin}
                 >
@@ -141,10 +161,12 @@ function Home() {
                 <button
                   style={buttonStyle}
                   onMouseOver={(e) =>
-                    (e.currentTarget.style.backgroundColor = buttonHoverStyle.backgroundColor)
+                    (e.currentTarget.style.backgroundColor =
+                      buttonHoverStyle.backgroundColor)
                   }
                   onMouseOut={(e) =>
-                    (e.currentTarget.style.backgroundColor = buttonStyle.backgroundColor)
+                    (e.currentTarget.style.backgroundColor =
+                      buttonStyle.backgroundColor)
                   }
                   onClick={handleAdminLogin}
                 >
@@ -157,6 +179,11 @@ function Home() {
           <h1 style={{ textAlign: "center", margin: "20px 0", color: "#333" }}>
             Welcome to Our Gallery
           </h1>
+          <p  style={{width:"900px",alignItems:"center",textAlign:"center",margin: "20px 0",justifyContent:"center",marginLeft:"450px"}}>Philasande Hotel is located in Pietermaritzburg, the heart of KwaZulu-Natal, and is renowned for its exceptional service and top-notch facilities. Security is of paramount importance, ensuring a safe and comfortable stay for all guests.
+
+Since re-opening on December 1, 2021, Philasande Hotel has welcomed guests with rave reviews and memorable experiences.
+
+The hotel features the renowned Mangwanani Signature Spa on-site, the Fire Room Restaurant, and the Copper Restaurant, which offers a hearty buffet breakfast (optional) every morning. This stunning hotel is the perfect short break for travelers looking for accommodation in Pietermaritzburg. Experience the best rate for hotel accommodation and discover the charm of Philasande Hotel for yourself.</p>
         </div>
 
         <div
@@ -165,7 +192,7 @@ function Home() {
             justifyContent: "center",
             marginTop: "20px",
             flexGrow: 1,
-            width:"100%"
+            width: "100%",
           }}
         >
           <div
@@ -183,12 +210,15 @@ function Home() {
               boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)", // Shadow for depth
             }}
           >
-            <h2 style={{ marginBottom: "10px", fontSize: "1.5em" }}>About Our Hotels</h2>
+            <h2 style={{ marginBottom: "10px", fontSize: "1.5em" }}>
+              About Our Hotels
+            </h2>
             <p>
-              Experience the finest hospitality at our hotels, where comfort meets luxury.
-              Whether you're traveling for business or leisure, our rooms are designed to
-              provide you with the perfect retreat. Enjoy top-notch amenities and personalized
-              service that makes every stay memorable. Book your next getaway with us today!
+              Experience the finest hospitality at our hotels, where comfort
+              meets luxury. Whether you're traveling for business or leisure,
+              our rooms are designed to provide you with the perfect retreat.
+              Enjoy top-notch amenities and personalized service that makes
+              every stay memorable. Book your next getaway with us today!
             </p>
             <iframe
               title="Google Map"
@@ -210,10 +240,14 @@ function Home() {
               position: "relative",
               overflow: "hidden",
               boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)", // Shadow for depth
-              marginLeft:"100px"
+              marginLeft: "100px",
             }}
           >
-            <h2 style={{ textAlign: "center", color: "#333", margin: "20px 0" }}>Gallery</h2>
+            <h2
+              style={{ textAlign: "center", color: "#333", margin: "20px 0" }}
+            >
+              Gallery
+            </h2>
             <img
               src={slides[slideIndex].src}
               alt={slides[slideIndex].alt}
