@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+// src/components/BookingCard.js
+>>>>>>> parent of 8adabe5 (updated UI for home Page)
 import React from "react";
 import { useDispatch } from "react-redux";
 import { addFavourite } from "../../features/favouritesSlice"; // Import favouritesSlice action
@@ -8,7 +12,11 @@ const BookingCard = ({ booking, onEdit, onDelete, isAdmin }) => {
 
   const handleBookNow = async () => {
     try {
+<<<<<<< HEAD
       await initiateStripePayment(booking.price); 
+=======
+      await initiateStripePayment(booking.price, booking); // Pass the booking object
+>>>>>>> parent of 8adabe5 (updated UI for home Page)
     } catch (error) {
       console.error("Payment failed:", error);
     }
@@ -30,7 +38,11 @@ const BookingCard = ({ booking, onEdit, onDelete, isAdmin }) => {
       <p style={styles.price}>Price: ${booking.price}</p>
 
       <div style={styles.buttonContainer}>
+<<<<<<< HEAD
         <button style={styles.bookButton} onClick={handleBookNow}>
+=======
+        <button style={{ ...styles.button, ...styles.bookButton }} onClick={handleBookNow}>
+>>>>>>> parent of 8adabe5 (updated UI for home Page)
           Book Now
         </button>
         <button style={styles.saveButton} onClick={handleSaveAsFavourite}>
