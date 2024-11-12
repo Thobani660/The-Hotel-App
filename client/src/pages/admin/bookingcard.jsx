@@ -1,4 +1,8 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+// src/components/BookingCard.js
+>>>>>>> parent of 8adabe5 (updated UI for home Page)
 =======
 // src/components/BookingCard.js
 >>>>>>> parent of 8adabe5 (updated UI for home Page)
@@ -13,7 +17,11 @@ const BookingCard = ({ booking, onEdit, onDelete, isAdmin }) => {
   const handleBookNow = async () => {
     try {
 <<<<<<< HEAD
+<<<<<<< HEAD
       await initiateStripePayment(booking.price); 
+=======
+      await initiateStripePayment(booking.price, booking); // Pass the booking object
+>>>>>>> parent of 8adabe5 (updated UI for home Page)
 =======
       await initiateStripePayment(booking.price, booking); // Pass the booking object
 >>>>>>> parent of 8adabe5 (updated UI for home Page)
@@ -42,6 +50,9 @@ const BookingCard = ({ booking, onEdit, onDelete, isAdmin }) => {
         <button style={styles.bookButton} onClick={handleBookNow}>
 =======
         <button style={{ ...styles.button, ...styles.bookButton }} onClick={handleBookNow}>
+<<<<<<< HEAD
+>>>>>>> parent of 8adabe5 (updated UI for home Page)
+=======
 >>>>>>> parent of 8adabe5 (updated UI for home Page)
           Book Now
         </button>
