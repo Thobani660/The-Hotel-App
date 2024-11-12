@@ -8,8 +8,8 @@ export const initiateStripePayment = async (amount, accommodationInfo) => {
   const { error } = await stripe.redirectToCheckout({
     lineItems: [{ price: "price_1QCM2KFVlr9lrfFn5li0OOIy", quantity: 1 }], // Set the price ID
     mode: "payment",
-    successUrl: `${window.location.origin}/user-profile?paymentSuccess=true&accommodation=${JSON.stringify(accommodationInfo)}`,
-    cancelUrl: window.location.origin + "/cancel",
+    successUrl: `${window.location.origin}/payment-success?paymentSuccess=true&accommodation=${JSON.stringify(accommodationInfo)}`,
+    cancelUrl: `${window.location.origin}/cancel`,
   });
   if (error) {
     console.error("Error redirecting to Stripe checkout:", error);

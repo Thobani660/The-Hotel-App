@@ -1,22 +1,17 @@
-import React, { useState } from "react";
+// src/components/BookingCard.js
+import React from "react";
 import { useDispatch } from "react-redux";
-import { addFavourite } from "../../features/favouritesSlice";
+import { addFavourite } from "../../features/favouritesSlice"; // Import favouritesSlice action
 import { initiateStripePayment } from "../../utils/stripePayment";
 
 const BookingCard = ({ booking, onEdit, onDelete, isAdmin }) => {
   const dispatch = useDispatch();
-  const [paymentError, setPaymentError] = useState("");
-  const [loading, setLoading] = useState(false);
 
   const handleBookNow = async () => {
-    setLoading(true);
     try {
-      await initiateStripePayment(booking.price, booking);
+      await initiateStripePayment(booking.price, booking); // Pass the booking object
     } catch (error) {
       console.error("Payment failed:", error);
-      setPaymentError("Payment failed. Please try again.");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -37,7 +32,7 @@ const BookingCard = ({ booking, onEdit, onDelete, isAdmin }) => {
 
       <div style={styles.buttonContainer}>
         <button style={{ ...styles.button, ...styles.bookButton }} onClick={handleBookNow}>
-          {loading ? "Processing..." : "Book Now"}
+          Book Now
         </button>
         <button style={{ ...styles.button, ...styles.saveButton }} onClick={handleSaveAsFavourite}>
           Save as Favourite
@@ -52,7 +47,6 @@ const BookingCard = ({ booking, onEdit, onDelete, isAdmin }) => {
             </button>
           </>
         )}
-        {paymentError && <p style={{ color: 'red' }}>{paymentError}</p>}
       </div>
     </div>
   );
