@@ -1,9 +1,9 @@
 // src/pages/admin/adminProfile.jsx
 import React, { useEffect, useState } from "react";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import { auth, db, storage } from "../../firebase"; // Ensure to import storage
+import { auth, db } from "../../firebase";
 import { useDispatch, useSelector } from "react-redux";
-import { logout, updateUser } from "../../features/authSlice";
+import { logout } from "../../features/authSlice";
 import {
     collection,
     getDocs,
@@ -15,8 +15,6 @@ import {
 import { setBookings, addBooking, updateBooking, deleteBooking } from "../../features/bookingsSlice";
 import BookingCard from "./bookingcard";
 import BookingForm from "./bookingsForm";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage"; // Import storage functions
-import { positions, textAlign, width } from "@mui/system";
 
 function AdminProfile() {
     const [admin, setAdmin] = useState(null);
@@ -30,8 +28,6 @@ function AdminProfile() {
         description: "",
         price: "",
         imageUrl: "",
-        displayName: "", // Added for admin display name
-        email: "", // Added for admin email
     });
     const [profilePic, setProfilePic] = useState(null);
     const [imageUrl, setImageUrl] = useState("");
@@ -117,9 +113,9 @@ function AdminProfile() {
     const handleProfilePicChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            setProfilePic(file);
             const reader = new FileReader();
             reader.onloadend = () => {
+                setProfilePic(file);
                 setImageUrl(reader.result);
             };
             reader.readAsDataURL(file);
@@ -128,33 +124,17 @@ function AdminProfile() {
 
     const handleProfileUpdate = async () => {
         if (profilePic) {
-            const storageRef = ref(storage, `profilePics/${admin.uid}`); // Create a reference to the file
-            await uploadBytes(storageRef, profilePic); // Upload the file
+            // Handle uploading the image to Firebase Storage and update the user profile
+            // This code should be implemented based on your Firebase Storage setup
+            const storageRef = firebase.storage().ref();
+            const profilePicRef = storageRef.child(`profilePics/${admin.uid}`);
+            await profilePicRef.put(profilePic);
+            const url = await profilePicRef.getDownloadURL();
 
-            const url = await getDownloadURL(storageRef); // Get the download URL
-            await updateDoc(doc(db, "admins", admin.uid), { photoURL: url }); // Update Firestore with the new photo URL
-
-            setAdmin({ ...admin, photoURL: url }); // Update local admin state
-            dispatch(updateUser({ photoURL: url })); // Update Redux state
+            // Update user profile
+            await updateDoc(doc(db, "admins", admin.uid), { photoURL: url });
+            setAdmin({ ...admin, photoURL: url });
             alert("Profile picture updated successfully!");
-        }
-    };
-
-    const handleAdminInfoUpdate = async (e) => {
-        e.preventDefault(); // Prevent page refresh
-        const updatedInfo = {
-            displayName: formData.displayName || admin.displayName,
-            email: formData.email || admin.email,
-        };
-
-        try {
-            await updateDoc(doc(db, "admins", admin.uid), updatedInfo); // Update Firestore with new admin info
-            setAdmin({ ...admin, ...updatedInfo }); // Update local state
-            dispatch(updateUser(updatedInfo)); // Update Redux state
-            alert("Admin information updated successfully!");
-            setEditMode(false); // Hide inputs after updating
-        } catch (error) {
-            console.error("Error updating admin info:", error);
         }
     };
 
@@ -166,8 +146,8 @@ function AdminProfile() {
                     <div style={styles.infoContainer}>
                         <div style={styles.avatarContainer}>
                             <img
-                                src={admin.photoURL || "/./client/src/res/premium_photo-1675745329378-5573c360f69f.avif"}
-                                
+                                src={admin.photoURL || "/default-avatar.png"}
+                                alt="Admin Avatar"
                                 style={styles.avatar}
                             />
                         </div>
@@ -180,48 +160,14 @@ function AdminProfile() {
                         <div style={styles.infoItem}>
                             <strong>Name:</strong> {admin.displayName || "No display name available"}
                         </div>
-                        
-                        {/* Show edit button */}
-                        <button onClick={() => setEditMode(!editMode)} style={styles.editButton}>
-                            {editMode ? "Cancel" : "Edit Profile"}
+                        <input
+                            type="file"
+                            onChange={handleProfilePicChange}
+                            style={styles.fileInput}
+                        />
+                        <button style={styles.uploadButton} onClick={handleProfileUpdate}>
+                            Update Profile Picture
                         </button>
-
-                        {/* Input fields for updating admin info */}
-                        {editMode && (
-                            <form onSubmit={handleAdminInfoUpdate}>
-                                <input
-                                    type="text"
-                                    placeholder="Update Display Name"
-                                    value={formData.displayName || ""}
-                                    onChange={(e) => setFormData({ ...formData, displayName: e.target.value })}
-                                    style={styles.inputField}
-                                />
-                                <input
-                                    type="email"
-                                    placeholder="Update Email"
-                                    value={formData.email || ""}
-                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                    style={styles.inputField}
-                                />
-                                <button type="submit" style={styles.updateButton}>
-                                    Update Admin Info
-                                </button>
-                            </form>
-                        )}
-
-                        {/* Show file input only when editing */}
-                        {editMode && (
-                            <>
-                                <input
-                                    type="file"
-                                    onChange={handleProfilePicChange}
-                                    style={styles.fileInput}
-                                />
-                                <button style={styles.uploadButton} onClick={handleProfileUpdate}>
-                                    Update Profile Picture
-                                </button>
-                            </>
-                        )}
                     </div>
                 ) : (
                     <p>No admin data available.</p>
@@ -247,7 +193,7 @@ function AdminProfile() {
                             booking={booking}
                             onEdit={() => handleEdit(booking.id)}
                             onDelete={() => handleDelete(booking.id)}
-                            isAdmin={true}
+                            isAdmin={true} // or false, depending on the user’s role
                         />
                     ))
                 ) : (
@@ -263,112 +209,93 @@ const styles = {
     container: {
         display: "flex",
         justifyContent: "space-between",
-        backgroundColor: "#f0f8ff",
+        backgroundColor: "#f0f8ff", // Light background for better contrast
         padding: "10px",
         width: "100%",
         height: "100vh",
-        marginTop: "100px",
+        marginTop: "70px",
         marginBottom: "50px",
         boxSizing: "border-box",
-        boxShadow: "0px 0px 20px rgba(0, 0, 0, 0.5)",
-        position:"fixed"
+        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)", // Softer shadow
     },
     profileCard: {
-        margin: "20px",
-        padding: "20px",
-        backgroundColor: "#fff",
-        borderRadius: "10px",
-        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-        alignItems: "center",
-        justifyContent:"center",
-        textAlign:"center",
-        height:"90%",
-        width:"30%"
+        backgroundColor: "#ffffff", // White background for profile card
+        width: "30%",
+        padding: "30px",
+        borderRadius: "15px",
+        textAlign: "center",
+        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)", // Softer shadow
+        overflow: "auto",
     },
-    heading: {
-        fontSize: "24px",
-        marginBottom: "20px",
-    },
-    infoContainer: {
-        width: "100%",
-        
-        },
     avatarContainer: {
-        marginBottom: "10px",
+        display: "flex",
+        justifyContent: "center",
+        marginBottom: "20px",
     },
     avatar: {
-        width: "100px",
-        height: "100px",
-        borderRadius: "100%",
+        width: "120px",
+        height: "120px",
+        borderRadius: "50%",
         objectFit: "cover",
-        backgroundColor:"red"
+        border: "3px solid #000080", // Border around the avatar
+    },
+    heading: {
+        fontSize: "28px", // Increased font size for the heading
+        color: "#000080", // Dark blue for heading
+        marginBottom: "20px",
+        fontWeight: "bold",
+    },
+    infoContainer: {
+        marginBottom: "30px",
     },
     infoItem: {
+        fontSize: "18px", // Slightly larger font for info items
+        color: "#555",
         marginBottom: "10px",
-    },
-    editButton: {
-        marginBottom: "10px",
-        padding: "10px 15px",
-        border: "none",
-        borderRadius: "5px",
-        backgroundColor: "#007bff",
-        color: "white",
-        cursor: "pointer",
-    },
-    inputField: {
-        width: "100%",
-        padding: "10px",
-        marginBottom: "10px",
-        borderRadius: "5px",
-        border: "1px solid #ccc",
-    },
-    updateButton: {
-        padding: "10px 15px",
-        border: "none",
-        borderRadius: "5px",
-        backgroundColor: "#28a745",
-        color: "white",
-        cursor: "pointer",
     },
     fileInput: {
-        marginBottom: "10px",
+        marginTop: "10px",
+        padding: "5px",
     },
     uploadButton: {
-        padding: "10px 15px",
-        border: "none",
-        borderRadius: "5px",
-        backgroundColor: "#ffc107",
+        backgroundColor: "#4CAF50", // Green for upload button
         color: "white",
+        padding: "10px 20px",
+        borderRadius: "5px",
+        border: "none",
         cursor: "pointer",
+        marginTop: "10px",
     },
     logOffButton: {
-        padding: "10px 15px",
-        border: "none",
-        borderRadius: "5px",
-        backgroundColor: "#dc3545",
+        backgroundColor: "#f44336",
         color: "white",
+        padding: "10px 20px",
+        borderRadius: "5px",
+        border: "none",
         cursor: "pointer",
+        marginTop: "20px", // Added margin for separation
     },
     detailsSection: {
-        flex: "2",
-        margin: "20px",
+        backgroundColor: "#ffffff", // White background for details section
+        width: "68%",
         padding: "20px",
-        backgroundColor: "#fff",
-        borderRadius: "10px",
-        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-        maxHeight: "90%", // Set a maximum height for the section
-        overflowY: "auto",  // Enable vertical scrolling if content overflows
+        borderRadius: "15px",
+        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)", // Softer shadow
+        overflowY: "auto",
     },
-    
-    
     createButton: {
-        padding: "10px 15px",
-        border: "none",
-        borderRadius: "5px",
-        backgroundColor: "#007bff",
+        backgroundColor: "#000080", // Dark blue for create button
         color: "white",
+        padding: "10px 20px",
+        borderRadius: "5px",
+        border: "none",
         cursor: "pointer",
+        display: "block",
         marginBottom: "20px",
+        transition: "background-color 0.3s", // Smooth transition for hover
+    },
+    createButtonHover: {
+        backgroundColor: "#003366", // Darker shade on hover
     },
 };
 
